@@ -1,0 +1,5 @@
+# Default ignored files
+*.beam
+erl_crash.dump
+ebin
+doc
