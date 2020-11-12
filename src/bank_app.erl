@@ -5,7 +5,7 @@
 -include("common.hrl").
 
 start(_Type, _Args) ->
-	?CVI("Start ~p ...", [?MODULE]),
+	?CVI("Staart ~p ...", [?MODULE]),
 
 	game_sup:start_link(),
 
