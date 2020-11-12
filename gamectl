@@ -69,9 +69,11 @@ ERLANG_OPTS="-connect_all false +K $POLL -smp $SMP +P $ERL_PROCESSES"
 BASE_EBIN=`dirname $ROOTDIR`/base/ebin
 MOCHI_EBIN=`dirname $ROOTDIR`/mochiweb/ebin
 CACLIB_EBIN=`dirname $ROOTDIR`/caclib/ebin
+CVDEPS_EBIN=`dirname $ROOTDIR`/deps/*/ebin
+
 ROOT_EBIN=$ROOTDIR/ebin
 
-EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $ROOT_EBIN"
+EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $CVDEPS_EBIN $ROOT_EBIN"
 #echo "ebins is " $EBINS
 
 WG_SO_PATH=$ROOTDIR/priv/lib

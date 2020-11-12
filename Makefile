@@ -7,7 +7,7 @@ all_rebuild:get-deps clean build
 
 build:dirs all_compile
 
-all_compile:apps compile copy_deps
+all_compile:apps compile
 
 compile:rebar_compile
 
@@ -33,11 +33,6 @@ clean_beam:
 
 clean-deps-beam:
 	(rm -rf deps/*/ebin/*.beam)
-
-copy_deps:
-	(mkdir -p $(EBIN_OUTDIR))
-	(cp -rf deps/*/ebin/*.beam $(EBIN_OUTDIR))
-	(cp -rf deps/*/ebin/*.app $(EBIN_OUTDIR))
 
 dirs:
 	(mkdir -p data; mkdir -p $(EBIN_OUTDIR))
