@@ -41,6 +41,7 @@ copy_deps:
 
 dirs:
 	(mkdir -p data; mkdir -p $(EBIN_OUTDIR))
+	(mkdir -p logs; mkdir -p logpps)
 
 apps:
 	(mkdir -p $(EBIN_OUTDIR))
