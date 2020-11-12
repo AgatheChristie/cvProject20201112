@@ -1,9 +1,11 @@
 # Default ignored files
 *.beam
 .rebar
+.rebar/erlcinfo
 erl_crash.dump
 ebin
 logpps
 doc
 deps
 logs
+logs/index
