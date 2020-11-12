@@ -2,4 +2,6 @@
 *.beam
 erl_crash.dump
 ebin
+logs
+logpps
 doc
