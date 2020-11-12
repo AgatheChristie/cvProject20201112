@@ -7,8 +7,6 @@ compile: apps get-deps rebar_compile
 all_compile:  rebar_compile copy_deps
 
 
-
-
 clean_beam:
 	(rm -rf ebin/*.beam)
 

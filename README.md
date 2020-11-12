@@ -29,7 +29,7 @@ var|变量目录
 
 ```
 make 
-sudo gamectl live # live方式启动
+sudo sh gamectl live # live方式启动
 
 ```
 
