@@ -13,6 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/include/protobuf" type="erlang-include" />
       <sourceFolder url="file://$MODULE_DIR$/include/sys" type="erlang-include" />
       <sourceFolder url="file://$MODULE_DIR$/include" type="erlang-include" />
+      <sourceFolder url="file://$MODULE_DIR$/deps/mysql/include" type="erlang-include" />
     </content>
     <orderEntry type="jdk" jdkName="Erlang 23" jdkType="Erlang SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

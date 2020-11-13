@@ -7,7 +7,7 @@
 start(_Type, _Args) ->
 	?CVI("Start ~p ...", [?MODULE]),
 
-	game_sup:start_link(),
+	bank_sup:start_link(),
 
 	{ok, self()}.
 

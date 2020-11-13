@@ -3,11 +3,13 @@
 EBIN_OUTDIR := ebin
 
 ###===================================================================
+
+
 all_rebuild:get-deps clean build
 
 build:dirs all_compile
 
-all_compile:apps compile
+all_compile:apps compile copy_deps
 
 compile:rebar_compile
 
@@ -41,6 +43,14 @@ dirs:
 apps:
 	(mkdir -p $(EBIN_OUTDIR))
 	(cp -rf src/app/*.app $(EBIN_OUTDIR))
+
+
+copy_deps:
+	(mkdir -p $(EBIN_OUTDIR))
+	(cp -rf deps/*/ebin/*.beam $(EBIN_OUTDIR))
+	(cp -rf deps/*/ebin/*.app $(EBIN_OUTDIR))
+
+
 
 ###===================================================================
 ### Rebar2.X Func

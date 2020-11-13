@@ -63,7 +63,7 @@ RUNAPP="$RUNAPP"
 NAME=-name
 [ "$ERLANG_NODE" = "${ERLANG_NODE%.*}" ] && NAME=-sname
 
-ERLANG_OPTS="-connect_all false +K $POLL -smp $SMP +P $ERL_PROCESSES"
+ERLANG_OPTS="-connect_all true +K $POLL -smp $SMP +P $ERL_PROCESSES"
 
 # define additional environment variables
 BASE_EBIN=`dirname $ROOTDIR`/base/ebin
@@ -73,7 +73,7 @@ CVDEPS_EBIN=`dirname $ROOTDIR`/deps/*/ebin
 
 ROOT_EBIN=$ROOTDIR/ebin
 
-EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $CVDEPS_EBIN $ROOT_EBIN"
+EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $ROOT_EBIN"
 #echo "ebins is " $EBINS
 
 WG_SO_PATH=$ROOTDIR/priv/lib

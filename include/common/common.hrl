@@ -9,8 +9,8 @@
 %% 代码路径
 -define(CODE_PATH, "ebin").
 %% 定义cv打印
--define(CVI(F), io:format("##[~w~w:~w] "++F++"~n", [self(), ?MODULE, ?LINE])).
--define(CVI(F, A), io:format("##[~w~w:~w] "++F++"~n", [self(), ?MODULE, ?LINE|A])).
+-define(CVI(F), io:format("##[~w~w:~w] " ++ F ++ "~n", [self(), ?MODULE, ?LINE])).
+-define(CVI(F, A), io:format("##[~w~w:~w] " ++ F ++ "~n", [self(), ?MODULE, ?LINE | A])).
 %% 定义boolean
 -define(TRUE, true).
 -define(FALSE, false).
@@ -40,7 +40,7 @@
     try
         do_call(Req, From, State)
     catch
-        Class:Error ->
+        _Class:_Error ->
 
             {noreply, State}
     end).
@@ -49,7 +49,7 @@
     try
         do_info(Req, State)
     catch
-        Class:Error ->
+        _Class:_Error ->
 
             {noreply, State}
     end).
@@ -59,17 +59,17 @@
     try
         (Fun)
     catch
-        Class:Error ->
+        _Class:_Error ->
 
             ok
     end).
 
 %% 封装处理玩家函数
--define(ROLE_FUN_CATCH(Fun, Role), util_game:handle_role_return(catch Fun, Role)).
+%%-define(ROLE_FUN_CATCH(Fun, Role), util_game:handle_role_return(catch Fun, Role)).
 
 %% 配置
--define(CONFIG(K), util_config:get(K)).
--define(CONFIG(K, D), util_config:get(K, D)).
+%%-define(CONFIG(K), util_config:get(K)).
+%%-define(CONFIG(K, D), util_config:get(K, D)).
 
 %% 日志等级 critical | error | warn | info | debug | verbose
 -define(LOG_LEVEL_CRITICAL, 1).
