@@ -38,7 +38,7 @@ start_mysql2(PoolId, ServerIp, Port, User, Pass) ->
         {ok, Pid} ->
             ConnectCount = 1,
             add_mysql_connect(ConnectCount, PoolId, ServerIp, Port, User, Pass, GameDbName, true),
-            ?CVI("Ip:~p,port:~w mysql pool:~w succeful", [ServerIp, Port, PoolId]),
+            ?CVI("Ip:~p,port:~w mysql powol:~w succeful", [ServerIp, Port, PoolId]),
             {ok, Pid};
         {error, {already_started, Pid}} ->
             ?CVI("Ip:~p,port:~w mysql pool:~w yijinqidong", [ServerIp, Port, PoolId]),
