@@ -10,7 +10,10 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    cvserver_sup:start_link().
+    {ok, Sup} = cvserver_sup:start_link(),
+    bank:start(),
+    {ok, Sup}.
 
 stop(_State) ->
+    bank:stop(),
     ok.

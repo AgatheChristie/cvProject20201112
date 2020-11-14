@@ -1,5 +1,10 @@
 %% coding: latin-1
 %%%----------------------------------------------------------------------
+%%%
+%%% @date 2016-07-29
+%%% 游戏内公共函数接口
+%%%
+%%%----------------------------------------------------------------------
 -module(util_game).
 
 -include("common.hrl").
@@ -9,8 +14,6 @@
     start_child/2
     , set_terminate_reason/1
     , get_terminate_reason/0
-
-
 ]).
 
 %% 启动某个子服务
@@ -32,3 +35,6 @@ set_terminate_reason(Reason) ->
 %% 获取结束原因
 get_terminate_reason() ->
     erlang:get(terminate_reason).
+
+
+

@@ -21,7 +21,7 @@ start() ->
         ok = util_app:start_apps(?DB_MYSQL_START_APPS)
     catch
         Type:Error ->
-            ?CVI("启动mysql节点出错:~w:~p", [Type, Error]),
+            ?CVI("qidong mysql node error:~w:~p", [Type, Error]),
             init:stop(?STATUS_ERROR)
     end.
 

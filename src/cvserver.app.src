@@ -1,6 +1,6 @@
 {application, cvserver,
  [
-  {description, ""},
+  {description, "cvgame node"},
   {vsn, "1"},
   {registered, []},
   {applications, [

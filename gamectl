@@ -166,7 +166,7 @@ live ()
       -boot start_sasl \
       -config $CONFIG \
       -kernel error_logger \{file,\"$CRASH_LOGS_LOG\"\} \
-      -s ${RUNAPP} \
+      -s ${RUNAPP} start_server\
       $ERLANG_OPTS -extra ${ARGS}
 }
 
