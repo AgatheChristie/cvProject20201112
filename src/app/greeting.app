@@ -1,0 +1,9 @@
+{application,greeting,
+             [{description,"greeting"},
+              {vsn,"0.1"},
+              {modules,[greeting,greeting_app,greeting_deps,greeting_sup,
+                        greeting_web]},
+              {registered,[]},
+              {mod,{greeting_app,[]}},
+              {env,[]},
+              {applications,[kernel,stdlib,crypto]}]}.

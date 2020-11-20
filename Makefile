@@ -49,6 +49,8 @@ copy_deps:
 	(mkdir -p $(EBIN_OUTDIR))
 	(cp -rf deps/*/ebin/*.beam $(EBIN_OUTDIR))
 	(cp -rf deps/*/ebin/*.app $(EBIN_OUTDIR))
+	(rm -rf deps/*/ebin/*.beam)
+
 
 
 

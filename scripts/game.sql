@@ -29,6 +29,20 @@ CREATE TABLE IF NOT EXISTS `ban` (
   KEY `INDEX_ID` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='封禁信息' ROW_FORMAT=COMPRESSED;
 
+
+
+DROP TABLE IF EXISTS `expenses`;
+CREATE TABLE `expenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `cost` float DEFAULT NULL,
+  `type_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `type_id` (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='测试WEB' ROW_FORMAT=COMPRESSED;
+
+
 DROP TABLE IF EXISTS `runoob_tbl`;
 CREATE TABLE IF NOT EXISTS `runoob_tbl`(
    `runoob_id` INT UNSIGNED AUTO_INCREMENT,
@@ -37,6 +51,10 @@ CREATE TABLE IF NOT EXISTS `runoob_tbl`(
    `submission_date` DATE,
    PRIMARY KEY ( `runoob_id` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='测试表' ROW_FORMAT=COMPRESSED;
+
+
+
+
 
 INSERT INTO runoob_tbl
     (runoob_title, runoob_author, submission_date)

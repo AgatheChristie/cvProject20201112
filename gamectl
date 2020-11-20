@@ -167,6 +167,8 @@ live ()
       -config $CONFIG \
       -kernel error_logger \{file,\"$CRASH_LOGS_LOG\"\} \
       -s ${RUNAPP} start_server\
+      -s greeting start\
+      -s reloader start\
       $ERLANG_OPTS -extra ${ARGS}
 }
 
