@@ -14,10 +14,8 @@
 
 %% 初始化
 init_db_mysql() ->
-    PoolCount = 1,
-    {ServerIp, Port, User, Pass} = {"localhost", 3306, "root", "123456"},
+    [ServerIp, Port, User, Pass, _DB, _Encode, PoolCount] = config:get_mysql_config(?CVSERVER),
     util_db_game:start_mysql(PoolCount, ServerIp, Port, User, Pass).
-
 
 
 %% 用来启动mysql的start_mysql
@@ -31,10 +29,9 @@ start_mysql(PoolId, ServerIp, Port, User, Pass) ->
     start_mysql(NewPoolId, ServerIp, Port, User, Pass).
 
 start_mysql2(PoolId, ServerIp, Port, User, Pass) ->
-
-    GameDbName = "RUNOOB",
+    [_ServerIp, _Port, _User, _Pass, GameDbName, Encode, _PoolCount] = config:get_mysql_config(?CVSERVER),
     ?CVI("~p:~p:~p:~p: ~p:~p: ", [GameDbName, PoolId, ServerIp, Port, User, Pass]),
-    case mysql:start_link(PoolId, ServerIp, Port, User, Pass, GameDbName, fun log/4, utf8) of
+    case mysql:start_link(PoolId, ServerIp, Port, User, Pass, GameDbName, fun log/4, Encode) of
         {ok, Pid} ->
             ConnectCount = 1,
             add_mysql_connect(ConnectCount, PoolId, ServerIp, Port, User, Pass, GameDbName, true),

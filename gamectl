@@ -12,7 +12,7 @@ ERL_MAX_ETS_TABLES=1400
 
 # define default environment variables
 NODE=cvbank
-HOST=192.168.20.179
+HOST=192.168.20.197
 ERLANG_NODE=$NODE@$HOST
 ERL=erl
 COOKIE="cwww"
@@ -63,7 +63,13 @@ RUNAPP="$RUNAPP"
 NAME=-name
 [ "$ERLANG_NODE" = "${ERLANG_NODE%.*}" ] && NAME=-sname
 
-ERLANG_OPTS="-connect_all true +K $POLL -smp $SMP +P $ERL_PROCESSES"
+ERLANG_OPTS="-connect_all true \
+    +K $POLL \
+    -smp $SMP \
+    +P $ERL_PROCESSES \
+    -mnesia dir "\"$WG_DB\"" \
+    -mnesia dump_log_write_threshold 100000 \
+    -mnesia no_table_loaders 1000"
 
 # define additional environment variables
 BASE_EBIN=`dirname $ROOTDIR`/base/ebin
@@ -160,15 +166,16 @@ live ()
     echo "--------------------------------------------------------------------"
     echo "cvcvcvPress any key to continue"
     echo ""
+    APP_MOD="manage"
     $ERL $NAME $ERLANG_NODE \
       -pa $EBINS \
       -setcookie $COOKIE \
       -boot start_sasl \
       -config $CONFIG \
       -kernel error_logger \{file,\"$CRASH_LOGS_LOG\"\} \
-      -s ${RUNAPP} start_server\
-      -s greeting start\
-      -s reloader start\
+      -s ${APP_MOD} start \
+      -s greeting start \
+      -s reloader start \
       $ERLANG_OPTS -extra ${ARGS}
 }
 

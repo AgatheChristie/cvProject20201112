@@ -125,6 +125,8 @@
 %% 服务器类型
 -define(GAME_SERVER, 0).                                                  %% 游戏服
 -define(CROSS_SERVER, 1).                                                 %% 跨服
+%% 服务器
+-define(CVSERVER, manage).                                                %% 服务器
 
 %% 一分钟
 -define(ONE_MIN, 60).

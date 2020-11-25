@@ -11,9 +11,9 @@
 
 start(_StartType, _StartArgs) ->
     {ok, Sup} = cvserver_sup:start_link(),
-    bank:start(),
+    manage:start(),
     {ok, Sup}.
 
 stop(_State) ->
-    bank:stop(),
+    manage:stop(),
     ok.

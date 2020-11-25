@@ -11,7 +11,7 @@
 -include("goods_info.hrl").
 -include("common.hrl").
 
-
+%%mnesia:create_schema([node()]).
 %%cawf:dawff(1000).
 dawff(ItemCoin1) ->
     A = lists:duplicate(5, "Elem"),

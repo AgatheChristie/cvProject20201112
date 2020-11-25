@@ -16,17 +16,17 @@
 -define(SYS_FALSE, 0).                                             %% 正在停止
 
 %% 启动的app列表
-
+-define(MANAGE_APP, manage).                                            %% 管理节点
 -define(DB_MYSQL_APP, db_mysql).                                        %% mysql节点
-
+-define(DB_MNESIA_APP, db_mnesia).                                      %% mnesia节点
 
 %% 系统自动的app列表
 -define(SYS_SASL, sasl).                                                %% 系统日志app
 
 %% 需要启动的app列表
-
+-define(MANAGE_START_APPS, [?SYS_SASL, ?MANAGE_APP]).
 -define(DB_MYSQL_START_APPS, [?SYS_SASL, ?DB_MYSQL_APP]).
-
+-define(DB_MNESIA_START_APPS, [?SYS_SASL, ?DB_MNESIA_APP]).
 
 %% app的节点ets表
 -define(ETS_APP_NODE_TABLE, ets_app_node).

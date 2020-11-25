@@ -4,6 +4,7 @@
 
 start_server() ->
     ?CVI("Start App:~p end", [cvserver]),
+    net_adm:ping('cvnice@192.168.20.89'),
     application:start(cvserver).
 
 
