@@ -1,5 +1,6 @@
 #!/bin/sh
-
+#import file
+. ./cvCVI.sh
 
 ulimit -SHn 51200
 
@@ -12,7 +13,7 @@ ERL_MAX_ETS_TABLES=1400
 
 # define default environment variables
 NODE=cvbank
-HOST=192.168.20.197
+# HOST=192.168.20.197
 ERLANG_NODE=$NODE@$HOST
 ERL=erl
 COOKIE="cwww"
@@ -46,17 +47,6 @@ while [ $# -ne 0 ] ; do
     esac
 done
 
-# get the node name from .caclib.name
-cac_name()
-{
-    CACNAMEFILE="./etc/.caclib.name"
-    if ! [ -f "$CACNAMEFILE" ]; then
-        echo ""
-        return 0
-    fi
-
-    echo `cat $CACNAMEFILE | grep -s '^\{.*\}\.$' | cut -d \' -f 2`
-}
 
 RUNAPP="$RUNAPP"
 
@@ -108,6 +98,70 @@ export HOME
 
 # Compatibility in ZSH
 #setopt shwordsplit 2>/dev/null
+
+
+###===================================================================
+### Func Begin
+###===================================================================
+
+# display ctl usage
+usage ()
+{
+    echo ""
+    echo "Commands to start an wg node:"
+    echo "  start  [--no_caclib] Start an node in server mode, default use caclib"
+    echo "  debug  Attach an interactive Erlang shell to a running node"
+    echo "  live   Start an node in live (interactive) mode"
+    echo ""
+    echo "Optional parameters when starting an node:"
+    echo "  --config file      Config file:             $WG_CONFIG_PATH"
+    echo "  --ctl-config file  Config file of wgctl:    $CONFIG"
+    echo "  --logs dir         Directory for logs:      $LOGS_DIR"
+    echo "  --spool dir        Database spool dir:      $WG_DB"
+    echo "  --node nodename    node name:               $ERLANG_NODE"
+    echo ""
+}
+
+# common control function
+ctl ()
+{
+    $ERL \
+      $NAME ctl_"$ERLANG_NODE" \
+      -noinput \
+      -boot start_clean \
+      -pa $EBINS \
+      -s ${CTLAPP}  -extra $ERLANG_NODE $@
+    result=$?
+    case $result in
+    0) :;;
+    *) usage;;
+    esac
+    return $result
+}
+
+# get the node name from .caclib.name
+cac_name()
+{
+    CACNAMEFILE="./etc/.caclib.name"
+    if ! [ -f "$CACNAMEFILE" ]; then
+        echo ""
+        return 0
+    fi
+
+    echo `cat $CACNAMEFILE | grep -s '^\{.*\}\.$' | cut -d \' -f 2`
+}
+
+# 获取ip
+# 获取第一行网卡对应ip
+get_ip() {
+    IP=`LANG=en_US; ifconfig | grep 'inet addr:' | head -n 1 | cut -d: -f 2 | awk '{print $1}'`
+    echo ${IP}
+
+#    GAME_IP=$(game_conf_value game_ip)
+#    GAME_IP=${GAME_IP#\"}
+#    GAME_IP=${GAME_IP%\"}
+#    echo ${GAME_IP}
+}
 
 # start server
 start ()
@@ -178,41 +232,18 @@ live ()
       -s reloader start \
       $ERLANG_OPTS -extra ${ARGS}
 }
+###===================================================================
+### Func End
+###===================================================================
 
-# common control function
-ctl ()
-{
-    $ERL \
-      $NAME ctl_"$ERLANG_NODE" \
-      -noinput \
-      -boot start_clean \
-      -pa $EBINS \
-      -s ${CTLAPP}  -extra $ERLANG_NODE $@
-    result=$?
-    case $result in
-    0) :;;
-    *) usage;;
-    esac
-    return $result
-}
 
-# display ctl usage
-usage ()
-{
-    echo ""
-    echo "Commands to start an wg node:"
-    echo "  start  [--no_caclib] Start an node in server mode, default use caclib"
-    echo "  debug  Attach an interactive Erlang shell to a running node"
-    echo "  live   Start an node in live (interactive) mode"
-    echo ""
-    echo "Optional parameters when starting an node:"
-    echo "  --config file      Config file:             $WG_CONFIG_PATH"
-    echo "  --ctl-config file  Config file of wgctl:    $CONFIG"
-    echo "  --logs dir         Directory for logs:      $LOGS_DIR"
-    echo "  --spool dir        Database spool dir:      $WG_DB"
-    echo "  --node nodename    node name:               $ERLANG_NODE"
-    echo ""
-}
+
+# 参数义
+[ -z "$HOST" ] && HOST=$(get_ip)
+#echo "Ip地址为:${HOST}"
+if [ -z ${HOST} ]; then
+    error "获取内网ip失败!"
+fi
 
 case ${ARGS} in
     ' start') start;;
