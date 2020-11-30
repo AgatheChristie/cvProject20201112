@@ -1,20 +1,18 @@
 #! /bin/bash
-
-
 # 打印错误
 error() {
-    echo $(red [错误]) "[$FUNCNAME##$LINENO]:$@"
+    echo $(red [错误]) "<$FUNCNAME##$@>"
     exit 1
 }
 
 # 打印警告
 warn() {
-    echo $(yellow [警告]) "[$FUNCNAME##$LINENO]:$@"
+    echo $(yellow [警告]) "<$FUNCNAME##$@>"
 }
 
 # 打印信息
 echo2() {
-    echo $(green [操作]) "[$FUNCNAME##$LINENO]:$@"
+    echo $(green [操作]) "<$FUNCNAME##$@>"
 }
 
 yellow() {

@@ -1,6 +1,4 @@
 #!/bin/sh
-#import file
-. ./cvCVI.sh
 
 ulimit -SHn 51200
 
@@ -13,7 +11,7 @@ ERL_MAX_ETS_TABLES=1400
 
 # define default environment variables
 NODE=cvbank
-# HOST=192.168.20.197
+HOST=192.168.20.197
 ERLANG_NODE=$NODE@$HOST
 ERL=erl
 COOKIE="cwww"
@@ -103,6 +101,8 @@ export HOME
 ###===================================================================
 ### Func Begin
 ###===================================================================
+#import file
+source $ROOTDIR/scripts/cvCVI.sh
 
 # display ctl usage
 usage ()
@@ -218,7 +218,7 @@ live ()
     echo "  q().  and press the Enter key"
     echo ""
     echo "--------------------------------------------------------------------"
-    echo "cvcvcvPress any key to continue"
+    echo "Press any key to continue"
     echo ""
     APP_MOD="manage"
     $ERL $NAME $ERLANG_NODE \
@@ -239,12 +239,12 @@ live ()
 
 
 # 参数义
-[ -z "$HOST" ] && HOST=$(get_ip)
+#[ -z "$HOST" ] && HOST=$(get_ip)
 #echo "Ip地址为:${HOST}"
-if [ -z ${HOST} ]; then
-    error "获取内网ip失败!"
-fi
-
+#if [ -z ${HOST} ]; then
+#    echo "没有ip"
+#fi
+warn ${LINENO}":test test"
 case ${ARGS} in
     ' start') start;;
     ' debug') debug;;
