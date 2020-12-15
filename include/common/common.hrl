@@ -142,5 +142,28 @@
 %% 每日特殊时间
 -define(SPECIAL_HOUR, 18000).
 
+%% some convert macros
+-define(F2S(F), (float_to_list(F))).
+-define(S2F(S), (list_to_float(S))).
+-define(B2S(B), (binary_to_list(B))).
+-define(B2T(B), (binary_to_term(B))).
+-define(T2B(T), (term_to_binary(T))).
+-define(S2B(S), (list_to_binary(S))).
+-define(N2S(N), integer_to_list(N)).
+-define(S2N(S), list_to_integer(S)).
+-define(N2B(N), ?S2B(integer_to_list(N))).
+-define(B2N(B), list_to_integer(?B2S(B))).
+
+
+-define(A2S(A), atom_to_list(A)).
+-define(S2A(S), list_to_atom(S)).
+-define(S2EA(S), list_to_existing_atom(S)).
+-define(L2B(S), list_to_bitstring(S)).
+
+
+
+
+
+
 -endif.
 

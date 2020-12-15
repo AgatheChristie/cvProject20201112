@@ -97,8 +97,10 @@ code_change(_OldVsn, State = #util_mnesia_init_state{}, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 init_mnesia(_NodeType, _AppMod) ->
+%%    mnesia:clear_table(shop),
     mnesia:delete_schema([node()]),
     mnesia:create_schema([node()]),
     mnesia:start(),
+%%    mnesia:wait_for_tables([shop,cost,design], 20000),
     util_mnesia:init_mnesia_db().
 
