@@ -67,7 +67,8 @@ CVDEPS_EBIN=`dirname $ROOTDIR`/deps/*/ebin
 
 ROOT_EBIN=$ROOTDIR/ebin
 
-EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $ROOT_EBIN"
+#EBINS="$BASE_EBIN $MOCHI_EBIN $CACLIB_EBIN $ROOT_EBIN"
+EBINS="$BASE_EBIN $ROOT_EBIN"
 #echo "ebins is " $EBINS
 
 WG_SO_PATH=$ROOTDIR/priv/lib
@@ -232,8 +233,6 @@ live ()
       -config $CONFIG \
       -kernel error_logger \{file,\"$CRASH_LOGS_LOG\"\} \
       -s ${APP_MOD} start \
-      -s greeting start \
-      -s reloader start \
       $ERLANG_OPTS -extra ${ARGS}
 }
 ###===================================================================

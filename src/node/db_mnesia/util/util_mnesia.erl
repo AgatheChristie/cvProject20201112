@@ -15,24 +15,51 @@
 -export([
     init_mnesia_db/0
     , init_mnesia_db2/1
+    , import_table_defines/0
     , table_defines/0
+    , table_defines_fix/0
+    , table_defines_dynamic/0
+    , node_table_defines/2
+    , line_table_defines/2
+    , role_base_table_defines/2
+    , role_game_table_defines/2
+    , role_gateway_table_defines/2
+    , role_fight_table_defines/2
+    , role_detail_table_defines/2
+%%    , role_offline_table_defines/2
+    , role_collect_table_defines/2
+    , dummy_table_defines/2
+    , dummy_detail_table_defines/2
+    , rank_info_table_defines/0
+    , rank_info_table_defines2/2
+    , arena_match_table_defines/0
+    , arena_match_table_defines2/2
+    , snapshot_table_defines/0
+    , snapshot_table_defines2/2
 ]).
 
 %% 初始化mnesia数据库表
 init_mnesia_db() ->
     TabDefines = util_mnesia:table_defines(),
-    init_mnesia_db2(TabDefines).
+    init_mnesia_db2(TabDefines),
+    init_data().
 
 init_mnesia_db2([]) ->
     ok;
-init_mnesia_db2([{Tab, TabDefine} | TTabDefines]) ->
-    {atomic, ok} = mnesia:create_table(Tab, TabDefine),
+init_mnesia_db2(TabDefines) ->
+    [{Tab, TabDefine} | TTabDefines] = TabDefines,
+    mnesia:create_table(Tab, TabDefine),
     init_mnesia_db2(TTabDefines).
 
+%% 重要的mnesia表
+import_table_defines() ->
+    NodeTabs = node_table_defines(?MAX_NODE_TYPE, []),
+    LineTabs = line_table_defines(?MAX_NODE_TYPE, []),
+    NodeTabs ++ LineTabs.
 
 %% mnesia的表定义
 table_defines() ->
-    DynamicTabs = [],
+    DynamicTabs = table_defines_dynamic(),
     FixTabs = table_defines_fix(),
     FixTabs ++ DynamicTabs.
 
@@ -83,3 +110,182 @@ table_defines_fix() ->
         {?DB_HANGHUI_CROSS_WAR_M, ?RAM_TABLE(set, hanghui_cross_war_m)},
         {?DB_HANGHUI_CROSS_WAR_PLAYER_M, ?RAM_TABLE(set, hanghui_cross_war_player_m)}
     ].
+
+%% 动态表定义
+table_defines_dynamic() ->
+    MaxNodeType = 18,
+    NodeTabs = node_table_defines(MaxNodeType, []),
+    LineTabs = line_table_defines(MaxNodeType, []),
+    RoleBaseTabs = role_base_table_defines(?M_MAX_BASE_TAB, []),
+    RoleGameTabs = role_game_table_defines(?M_MAX_GAME_TAB, []),
+    RoleGatewayTabs = role_gateway_table_defines(?M_MAX_GATEWAY_TAB, []),
+    RoleFightTabs = role_fight_table_defines(?M_MAX_FIGHT_TAB, []),
+%%    RoleOfflineTabs = role_offline_table_defines(?M_MAX_OFFLINE_TAB, []),
+    RoleDetailTabs = role_detail_table_defines(?M_MAX_DETAIL_TAB, []),
+    RoleCollectTabs = role_collect_table_defines(?M_MAX_COLLECT_TAB, []),
+    RoleDummyTabs = dummy_table_defines(?M_MAX_DUMMY_TAB, []),
+    DummyDetailTabs = dummy_detail_table_defines(?M_MAX_DETAIL_TAB, []),
+    RankInfoTabs = rank_info_table_defines(),
+    ArenaMatchTabs = arena_match_table_defines(),
+    SnapshotTabs = snapshot_table_defines(),
+    NodeTabs ++ LineTabs ++ RoleBaseTabs ++ RoleGameTabs ++
+        RoleGatewayTabs ++ RoleFightTabs ++ RoleDetailTabs
+        ++ RoleCollectTabs ++ RoleDummyTabs ++ DummyDetailTabs ++ RankInfoTabs
+        ++ ArenaMatchTabs ++ SnapshotTabs.
+
+%% 节点表
+node_table_defines(0, Result) ->
+    Result;
+node_table_defines(NodeType, Result) ->
+    NewNodeType = NodeType - 1,
+    NewResult = [{?DB_NODE_M(NodeType), ?RAM_TABLE(set, node_m)} | Result],
+    node_table_defines(NewNodeType, NewResult).
+
+%% 节点分线表
+line_table_defines(0, Result) ->
+    Result;
+line_table_defines(NodeType, Result) ->
+    NewNodeType = NodeType - 1,
+    NewResult = [{?DB_LINE_M(NodeType), ?RAM_TABLE(set, line_m)} | Result],
+    line_table_defines(NewNodeType, NewResult).
+
+%% 玩家基础表
+role_base_table_defines(0, Result) ->
+    Result;
+role_base_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_BASE_M(MaxType), ?RAM_TABLE(set, role_base_m)} | Result],
+    role_base_table_defines(NewMaxType, NewResult).
+
+%% 玩家游戏表
+role_game_table_defines(0, Result) ->
+    Result;
+role_game_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_GAME_M(MaxType), ?RAM_TABLE(set, role_game_m)} | Result],
+    role_game_table_defines(NewMaxType, NewResult).
+
+%% 玩家游戏表
+role_gateway_table_defines(0, Result) ->
+    Result;
+role_gateway_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_GATEWAY_M(MaxType), ?RAM_TABLE(set, role_gateway_m)} | Result],
+    role_gateway_table_defines(NewMaxType, NewResult).
+
+%% 玩家游戏表
+role_fight_table_defines(0, Result) ->
+    Result;
+role_fight_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_FIGHT_M(MaxType), ?RAM_TABLE(set, role_fight_m)} | Result],
+    role_fight_table_defines(NewMaxType, NewResult).
+
+%% 玩家详细缓存表
+role_detail_table_defines(0, Result) ->
+    Result;
+role_detail_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_DETAIL_M(MaxType), ?RAM_TABLE(set, role_detail_m)} | Result],
+    role_detail_table_defines(NewMaxType, NewResult).
+
+%% 玩家离线缓存表
+%%role_offline_table_defines(0, Result) ->
+%%    Result;
+%%role_offline_table_defines(MaxType, Result) ->
+%%    NewMaxType = MaxType - 1,
+%%    NewResult = [{?DB_ROLE_OFFLINE_M(MaxType), ?RAM_TABLE(set, role)} | Result],
+%%    role_offline_table_defines(NewMaxType, NewResult).
+%% 玩家简单收集表
+role_collect_table_defines(0, Result) ->
+    Result;
+role_collect_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_COLLECT_M(MaxType), ?RAM_TABLE(set, role_collect_m)} | Result],
+    role_collect_table_defines(NewMaxType, NewResult).
+
+%% 玩家假人缓存表
+dummy_table_defines(0, Result) ->
+    Result;
+dummy_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_DUMMY_M(MaxType), ?RAM_TABLE(set, dummy_m)} | Result],
+    dummy_table_defines(NewMaxType, NewResult).
+
+%% 假人详细缓存表
+dummy_detail_table_defines(0, Result) ->
+    Result;
+dummy_detail_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_DUMMY_DETAIL_M(MaxType), ?RAM_TABLE(set, dummy_detail_m)} | Result],
+    dummy_detail_table_defines(NewMaxType, NewResult).
+
+%% 排行榜信息
+rank_info_table_defines() ->
+    RankTypes = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1011, 1015, 1009, 1017, 1014, 1016, 1022, 1020, 1019, 1018, 1010, 1013, 1021, 1012, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034],
+    rank_info_table_defines2(RankTypes, []).
+
+rank_info_table_defines2([], Result) ->
+    Result;
+rank_info_table_defines2(RankTypes, Result) ->
+    [RankType | TRankTypes] = RankTypes,
+    DefinesList =
+        [
+            {?DB_RANK_INFO_M(RankType), ?RAM_TABLE(set, rank_info_m)}
+        ],
+    NewResult = DefinesList ++ Result,
+    rank_info_table_defines2(TRankTypes, NewResult).
+
+%% 竞技场匹配
+arena_match_table_defines() ->
+    GroupIds = [1, 2, 3, 4, 5, 6, 7, 8],
+    arena_match_table_defines2(GroupIds, []).
+
+arena_match_table_defines2([], Result) ->
+    Result;
+arena_match_table_defines2(GroupIds, Result) ->
+    [GroupId | TGroupIds] = GroupIds,
+    DefinesList =
+        [
+            {?DB_ARENA_MATCH_M(GroupId), ?RAM_TABLE(set, arena_match_m)}
+        ],
+    NewResult = DefinesList ++ Result,
+    arena_match_table_defines2(TGroupIds, NewResult).
+
+%% 快照信息
+snapshot_table_defines() ->
+    SnapshotTypes = [1001, 1002],
+    snapshot_table_defines2(SnapshotTypes, []).
+
+snapshot_table_defines2([], Result) ->
+    Result;
+snapshot_table_defines2(SnapshotTypes, Result) ->
+    [SnapshotType | TSnapshotTypes] = SnapshotTypes,
+    DefinesList =
+        [
+            {?DB_SNAPSHOT_M(SnapshotType), ?RAM_TABLE(set, snapshot_m)}
+        ],
+    NewResult = DefinesList ++ Result,
+    snapshot_table_defines2(TSnapshotTypes, NewResult).
+
+init_data() ->
+    MBossPlayer = #server_boss_player_m{
+        role_id = 700001,
+        player_status = 1,
+        total_damage = 40000
+    },
+    util_m_server_boss_player:add_server_boss_player(MBossPlayer),
+    MBossPlayer2 = #server_boss_player_m{
+        role_id = 700002,
+        player_status = 2
+    },
+    util_m_server_boss_player:add_server_boss_player(MBossPlayer2),
+    MBossPlayer3 = #server_boss_player_m{
+        role_id = 700003,
+        player_status = 1
+    },
+    util_m_server_boss_player:add_server_boss_player(MBossPlayer3),
+    ok.
+
+
+

@@ -12,8 +12,8 @@
 -define(STATUS_STARTING, 5).                                            %% 正在启动
 -define(STATUS_RUNNING, 6).                                             %% 正在运行中
 -define(STATUS_STOPING, 7).                                             %% 正在停止
--define(SYS_TRUE, 1).                                             %% 正在停止
--define(SYS_FALSE, 0).                                             %% 正在停止
+-define(SYS_TRUE, 1).                                                   %% 正在停止
+-define(SYS_FALSE, 0).                                                  %% 正在停止
 
 %% 启动的app列表
 -define(MANAGE_APP, manage).                                            %% 管理节点

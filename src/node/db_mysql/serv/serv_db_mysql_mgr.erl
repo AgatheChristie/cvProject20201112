@@ -47,6 +47,14 @@ code_change(_OldVsn, State, _Extra) ->
 %% ====================================================================
 %% Internal functions
 %% ====================================================================
+
+
+%% 进入场景key
+do_call({enter_scene_key, SceneKey, SArvgIds, CArvgIds, FunNode, FatherKey}, _From, State) ->
+    ?CVI("fawf:~p end",[{SceneKey, SArvgIds, CArvgIds, FunNode, FatherKey}]),
+    {reply, cventer_scene_key, State};
+
+
 do_call(_Request, _From, State) ->
     {reply, ok, State}.
 

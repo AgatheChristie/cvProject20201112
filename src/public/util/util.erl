@@ -24,7 +24,8 @@
     , sprefix_n/2
     , sprefix_n2/2
     , sprefix_n3/2
-]).
+    , rpc_call/4
+    , gen_rpc_call/3]).
 
 %% 获取socket peer的ip
 peer_str(Sock) when is_port(Sock) ->
@@ -100,3 +101,17 @@ sprefix_n3(Prefix, PreFixValue) when is_list(PreFixValue) ->
     Prefix ++ "_" ++ PreFixValue;
 sprefix_n3(Prefix, PreFixValue) when is_atom(PreFixValue) ->
     Prefix ++ "_" ++ ?A2S(PreFixValue).
+
+
+%% 远程同步调用
+rpc_call(ReNode, Mod, Method, Arvgs) ->
+    rpc_call(ReNode, Mod, Method, Arvgs, ?CALL_TIMEOUT).
+rpc_call(ReNode, Mod, Method, Arvgs, Timeout) ->
+    rpc:call(ReNode, Mod, Method, Arvgs, Timeout).
+
+%% 远程同步调用
+%% 避免使用rpc:call 尽量使用 gen_server:call({Pid,Node}, Request, Timeout)来代替rpc:call(M,F,A)
+gen_rpc_call(ReNode, RePidName, Msg) ->
+    gen_rpc_call(ReNode, RePidName, Msg, ?CALL_TIMEOUT).
+gen_rpc_call(ReNode, RePidName, Msg, Timeout) ->
+    catch gen_server:call({RePidName, ReNode}, Msg, Timeout).

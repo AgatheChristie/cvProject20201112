@@ -27,11 +27,13 @@ start_link() ->
 	%% mnesia数据库管理进程
 	ok = util_game:start_child(Sup, {serv_mnesia_mgr, {serv_mnesia_mgr, start_link, [?MANAGE_TYPE, ?MANAGE_APP]},
 		permanent, 30000, worker, [serv_mnesia_mgr]}),
-	%% mnesia数据库
-%%	ok = util_db_mnesia_sup:start_db_mnesia_sup(Sup),
 
-	%% mysql数据库
-	ok = util_db_mysql_sup:start_db_mysql_sup(Sup),
+	%% ets管理
+%%	ok = util_game:start_child(Sup, {serv_ets_mgr, {serv_ets_mgr, start_link, [?MANAGE_TYPE]},
+%%		permanent, 30000, worker, [serv_ets_mgr]}),
+
+
+	ok = util_manage_sup:start_manage_sup(Sup),
 
 	?CVI("Game Server Sup = ~w", [Sup]),
 	{ok, Sup}.

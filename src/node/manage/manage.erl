@@ -33,7 +33,7 @@ start() ->
 
 %% application调用的启动游戏
 start(_Type, _StartArgs) ->
-	net_adm:ping('cvnice@192.168.20.89'),
+%%	net_adm:ping('cvnice@192.168.20.89'),
 
 	%% 启动自带的apps
 	ok = util_app:start_self_apps(),
