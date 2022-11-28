@@ -27,7 +27,7 @@ start() ->
 		ok = util_app:start_apps(?MANAGE_START_APPS)
 	catch
 		Type:Error ->
-			?CVI("Start the game node error:~w:~p", [Type, Error]),
+			?ERROR("Start the game node error:~w:~p", [Type, Error]),
 			init:stop(?STATUS_ERROR)
 	end.
 
@@ -41,7 +41,7 @@ start(_Type, _StartArgs) ->
 	{ok, Sup} = manage_sup:start_link(),
 
 
-	?CVI("Start the game node ~p success", [node()]),
+	?ERROR("Start the game node ~p success", [node()]),
 	{ok, Sup}.
 
 %% 单独停止游戏

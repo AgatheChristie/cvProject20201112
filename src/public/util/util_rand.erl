@@ -5,8 +5,6 @@
 -include("common.hrl").
 -include("app.hrl").
 
--define(IF(B,T,F), begin (case (B) of true->(T); false->(F) end) end).
-
 -export([
     seed/0
     , rand/0

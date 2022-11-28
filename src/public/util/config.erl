@@ -60,7 +60,7 @@ get_tcp_listener_ip(App) ->
 get_mysql_config(App) ->
     case application:get_env(App, mysql_config) of
         {ok, false} ->
-            ?CVI("ff"),
+            ?ERROR("ff"),
             throw(undefined);
         {ok, Mysql_config} ->
             {_, Host} = lists:keyfind(host, 1, Mysql_config),
@@ -72,7 +72,7 @@ get_mysql_config(App) ->
             {_, DBGamePool} = lists:keyfind(db_game_pool, 1, Mysql_config),
             [Host, Port, User, Password, DB, Encode, DBGamePool];
         undefined ->
-            ?CVI("ff"),
+            ?ERROR("ff"),
             throw(undefined)
     end.
 

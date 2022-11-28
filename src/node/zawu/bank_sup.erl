@@ -5,11 +5,11 @@
 -include("common.hrl").
 %% 定义一个启动本监督树的API
 start_link() ->
-    ?CVI("start_link start_link"),
+    ?ERROR("start_link start_link"),
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
-    ?CVI("init init"),
+    ?ERROR("init init"),
     %% 启动2个子进程
     BankCenterSpec = {
       center %% 指定本进程(在子进程中唯一)的名称

@@ -11,7 +11,7 @@ ERL_MAX_ETS_TABLES=1400
 
 # define default environment variables
 NODE=cvbank
-HOST=192.168.20.197
+HOST=192.168.1.197
 ERLANG_NODE=$NODE@$HOST
 ERL=erl
 COOKIE="cwww"
@@ -168,19 +168,7 @@ get_ip() {
 #    echo ${GAME_IP}
 }
 
-# start server
-start ()
-{
-    $ERL \
-      $NAME $ERLANG_NODE \
-      -noinput -detached \
-      -pa $EBINS \
-      -mnesia dir "\"$WG_DB\"" \
-      -kernel error_logger \{file,\"$WG_LOG_PATH\"\} \
-      -sasl sasl_error_logger \{file,\"$SASL_LOG_PATH\"\} \
-      -s ${RUNAPP}\
-      $ERLANG_OPTS $ARGS "$@"
-}
+
 
 # attach to server
 debug ()
@@ -207,6 +195,24 @@ debug ()
       -remsh $ERLANG_NODE \
       $ERLANG_OPTS $ARGS "$@"
 }
+# start server
+start ()
+{
+    $ERL \
+      $NAME $ERLANG_NODE \
+      -pa $EBINS \
+      -setcookie $COOKIE \
+      -boot start_sasl \
+      -config $CONFIG \
+      -kernel error_logger \{file,\"$WG_LOG_PATH\"\} \
+      -sasl sasl_error_logger \{file,\"$SASL_LOG_PATH\"\} \
+      -s ${RUNAPP} start \
+      $ERLANG_OPTS $ARGS "$@"
+
+}
+
+
+
 
 # start interactive server
 live ()

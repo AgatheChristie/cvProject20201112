@@ -55,7 +55,7 @@ handle_info(Req, State) ->
 %% terminate回调函数
 terminate(_Reason, _State) ->
     TerminateReason = util_game:get_terminate_reason(),
-    ?CVI("mnesia database management process end:~p", [TerminateReason]),
+    ?ERROR("mnesia database management process end:~p", [TerminateReason]),
     ok.
 
 %% code_change回调函数
@@ -70,7 +70,7 @@ do_call({get_mfa_info, M, F, A}, _From, State) ->
     {reply, catch erlang:apply(M, F, A), State};
 
 do_call(Req, _From, State) ->
-    ?CVI("unknown req:~w", [Req]),
+    ?ERROR("unknown req:~w", [Req]),
     {noreply, State}.
 
 %% 定时事件,由wg_timer_engine产生
@@ -80,13 +80,13 @@ do_info({?TIMING_SEC_EVENT, NowSec, NowMs}, State) ->
             {ok, State2} ->
                 State2;
             _Other ->
-                ?CVI("mnesia database management process have err:~p", [_Other]),
+                ?ERROR("mnesia database management process have err:~p", [_Other]),
                 State
         end,
     {noreply, NewState};
 
 do_info(Req, State) ->
-    ?CVI("unknown req:~w", [Req]),
+    ?ERROR("unknown req:~w", [Req]),
     {noreply, State}.
 
 %% 定时循环

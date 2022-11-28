@@ -8,9 +8,21 @@
 
 %% 代码路径
 -define(CODE_PATH, "ebin").
+
 %% 定义cv打印
--define(CVI(F), io:format("##[~w~w:~w] " ++ F ++ "~n", [self(), ?MODULE, ?LINE])).
--define(CVI(F, A), io:format("##[~w~w:~w] " ++ F ++ "~n", [self(), ?MODULE, ?LINE | A])).
+-define(ERROR(F), wg_logger_self:error_msg(?MODULE, ?LINE, F, [])).
+-define(ERROR(F, D), wg_logger_self:error_msg(?MODULE, ?LINE, F, D)).
+
+-define(INFO(F), wg_logger_self:info_msg(?MODULE, ?LINE, F, [])).
+-define(INFO(F, D), wg_logger_self:info_msg(?MODULE, ?LINE, F, D)).
+
+%% 定义cv打印
+-define(IF(C, T, F), (case (C) of true -> (T); false -> (F) end)).
+-define(E_OK, 0).  %%正确
+-define(SYS_TRUE, 1).                                                   %% 正在停止
+-define(SYS_FALSE, 0).                                                  %% 正在停止
+
+
 %% 定义boolean
 -define(TRUE, true).
 -define(FALSE, false).
@@ -126,7 +138,8 @@
 -define(GAME_SERVER, 0).                                                  %% 游戏服
 -define(CROSS_SERVER, 1).                                                 %% 跨服
 %% 服务器
--define(CVSERVER, manage).                                                %% 服务器
+-define(CVSERVER, db_mysql).                                                  %% 服务器
+%%  -define(CVSERVER, manage).                                            %% 服务器
 
 %% 一分钟
 -define(ONE_MIN, 60).

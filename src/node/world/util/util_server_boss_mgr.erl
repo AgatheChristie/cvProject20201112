@@ -27,12 +27,12 @@
 %%util_server_boss_mgr:get_server_boss_info().
 get_server_boss_info() ->
     AllPlayers = util_m_server_boss_player:get_all_server_boss_player(),
-    ?CVI("cvAA:~p end", [AllPlayers]),
+    ?ERROR("cvAA:~p end", [AllPlayers]),
     ok.
 %%util_server_boss_mgr:get_in_server_boss_info().
 get_in_server_boss_info() ->
     AllInPlayers = util_m_server_boss_player:get_all_in_server_boss_player(),
-    ?CVI("cvAllInPlayers:~p end", [AllInPlayers]),
+    ?ERROR("cvAllInPlayers:~p end", [AllInPlayers]),
     ok.
 
 %% 玩家进入场景
@@ -87,7 +87,7 @@ role_leave2(State, LeaveId) ->
     case util_m_server_boss_player:get_server_boss_player_by_id(LeaveId) of
         [MBossPlayer] ->
             %% 开始游戏时才会算退出
-            ?CVI("cvMBossPlayer:~p end", [MBossPlayer]),
+            ?ERROR("cvMBossPlayer:~p end", [MBossPlayer]),
             case lists:member(PlayStatus, [?SERVER_BOSS_INIT, ?SERVER_BOSS_START]) of
                 true ->
                     MBossPlayer2 = MBossPlayer#server_boss_player_m{

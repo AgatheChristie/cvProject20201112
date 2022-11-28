@@ -27,7 +27,7 @@ start() ->
         ok = util_app:start_apps(?DB_MNESIA_START_APPS)
     catch
         Type:Error ->
-            ?CVI("qidong mnesia cache node error:~w:~p", [Type, Error]),
+            ?ERROR("qidong mnesia cache node error:~w:~p", [Type, Error]),
             init:stop(?STATUS_ERROR)
     end.
 
@@ -42,7 +42,7 @@ start(_Type, _StartArgs) ->
     %% 重载开服时间
 
 
-    ?CVI("qidong mnesia cache node ~p succeful", [node()]),
+    ?ERROR("qidong mnesia cache node ~p succeful", [node()]),
     {ok, Sup}.
 
 %% 单独停止游戏

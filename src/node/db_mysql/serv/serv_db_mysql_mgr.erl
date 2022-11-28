@@ -24,7 +24,9 @@ init(_Arg) ->
     erlang:process_flag(trap_exit, true),
     %% 设置随机种子
     util_rand:seed(),
+    ?ERROR("DB finished:~w", [qqq]),
     util_db_game:init_db_mysql(),
+    ?ERROR("DB finished:~w", [qqq]),
     {ok, #state{}}.
 
 handle_call(Req, From, State) ->
@@ -38,7 +40,7 @@ handle_info(Info, State) ->
 
 terminate(_Reason, _State) ->
     TerminateReason = util_game:get_terminate_reason(),
-    ?CVI("DB finished:~w", [TerminateReason]),
+    ?ERROR("DB finished:~w", [TerminateReason]),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
@@ -51,7 +53,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% 进入场景key
 do_call({enter_scene_key, SceneKey, SArvgIds, CArvgIds, FunNode, FatherKey}, _From, State) ->
-    ?CVI("fawf:~p end",[{SceneKey, SArvgIds, CArvgIds, FunNode, FatherKey}]),
+    ?ERROR("fawf:~p end",[{SceneKey, SArvgIds, CArvgIds, FunNode, FatherKey}]),
     {reply, cventer_scene_key, State};
 
 
@@ -60,11 +62,11 @@ do_call(_Request, _From, State) ->
 
 %% 进程退出
 do_info({'EXIT', ExitPid, _}, State) ->
-    ?CVI("DB proce exit:~w", [ExitPid]),
+    ?ERROR("DB proce exit:~w", [ExitPid]),
     {noreply, State};
 
 do_info(_Msg, State) ->
-    ?CVI("unknown req:~w", [_Msg]),
+    ?ERROR("unknown req:~w", [_Msg]),
     {noreply, State}.
 
 %% ====================================================================

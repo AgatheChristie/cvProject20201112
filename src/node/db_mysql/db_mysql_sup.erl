@@ -22,7 +22,7 @@ start_link() ->
 
 
 
-    ?CVI("ddw Sup = ~w", [Sup]),
+    ?ERROR("ddw Sup = ~w", [Sup]),
 
     {ok, Sup}.
 

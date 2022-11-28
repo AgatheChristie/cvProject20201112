@@ -5,12 +5,12 @@
 -include("common.hrl").
 
 start(_Type, _Args) ->
-	?CVI("Start ~p ...", [?MODULE]),
+	?ERROR("Start ~p ...", [?MODULE]),
 
 	bank_sup:start_link(),
 
 	{ok, self()}.
 
 stop(_State) ->
-	?CVI("Stop ~p!", [?MODULE]),
+	?ERROR("Stop ~p!", [?MODULE]),
 	ok.

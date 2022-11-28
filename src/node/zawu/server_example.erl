@@ -44,7 +44,7 @@ goodsNumber(GoodsName) ->
     {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
 
 start_link() ->
-    ?CVI("start start"),
+    ?ERROR("start start"),
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 
@@ -61,7 +61,7 @@ start_link() ->
 
 
 init([]) ->
-    ?CVI("init init"),
+    ?ERROR("init init"),
     initialize_ets(),
     initialize_ets_goods(),
     start_parallel_server(),
@@ -99,7 +99,7 @@ handle_call({deleteSocket, UserName, Socket}, _From, Tab) ->
                     ets:delete(Tab, UserName);
 
                 [] ->
-                    ?CVI("no exist this  socket ~p~n", [Socket])
+                    ?ERROR("no exist this  socket ~p~n", [Socket])
             end,
 
     {reply, Reply, Tab};
@@ -120,7 +120,7 @@ handle_call({shop, CvUser, {What, N}}, _From, Tab) ->
 %用户在线个数
 handle_call({userNumber}, _From, Tab) ->
     Socketlist = ets:tab2list(Tab),
-    ?CVI("~p user online~n", [length(Socketlist)]),
+    ?ERROR("~p user online~n", [length(Socketlist)]),
     Reply = length(Socketlist),
     {reply, Reply, Tab};
 %比武匹配   server_example:userMatching().
@@ -141,19 +141,19 @@ handle_call({goodsNumber, GoodsName}, _From, Tab) ->
         "all" ->
             Socketlist = ets:tab2list(goods),
             F = fun(GoodsType) ->
-%%                ?CVI("~p left ~p end", [erlang:element(3, GoodsType), erlang:element(4, GoodsType)])
-                ?CVI("~p cvleft ~p end", [GoodsType#goods.name, GoodsType#goods.quantity])
+%%                ?ERROR("~p left ~p end", [erlang:element(3, GoodsType), erlang:element(4, GoodsType)])
+                ?ERROR("~p cvleft ~p end", [GoodsType#goods.name, GoodsType#goods.quantity])
                 end,
             lists:foreach(F, Socketlist);
         GoodsName ->
             [A1] = ets:lookup(goods, GoodsName),
-            ?CVI("~p left ~p end", [A1#goods.name, A1#goods.quantity])
+            ?ERROR("~p left ~p end", [A1#goods.name, A1#goods.quantity])
     end,
     {reply, ok, Tab};
 %广播信息
 handle_call({sendAllMessage, Name, Msg}, _From, Tab) ->
     Socketlist = [{UserName, Socket} || {UserName, Socket} <- ets:tab2list(Tab), UserName =/= Name],
-    ?CVI("list ~p~n", [Socketlist]),
+    ?ERROR("list ~p~n", [Socketlist]),
     lists:foreach(
         fun({_UserName, Socket}) ->
             N = term_to_binary(Name),
@@ -283,10 +283,10 @@ cvListLastEven(Acc, [A, B | T]) ->
 
 %接收信息并处理
 loop(Socket) ->
-    ?CVI("server loop..... Socket is ~p end", [Socket]),
+    ?ERROR("server loop..... Socket is ~p end", [Socket]),
     receive
         {tcp, Socket, Bin} ->
-            ?CVI("loop receive BinBin Socket is ~p  end", [Socket]),  %这个Socket和前面的Socket一样的，如果不一样就进行下一个模式匹配
+            ?ERROR("loop receive BinBin Socket is ~p  end", [Socket]),  %这个Socket和前面的Socket一样的，如果不一样就进行下一个模式匹配
             <<State:16, Date/binary>> = Bin,  %State状态码
             <<Size1:16, Date1/binary>> = Date,  %姓名的长度
             <<Str1:Size1/binary, Date2/binary>> = Date1, %Str1 名字
@@ -296,10 +296,10 @@ loop(Socket) ->
             case State of
                 0000 ->
                     Name = binary_to_term(Str1),
-                    ?CVI("logining  ~p ~n", [Name]), %cym
+                    ?ERROR("logining  ~p ~n", [Name]), %cym
                     case info_lookup(Name) of
                         [CvUser = #user{}] ->
-                            ?CVI("CvUser is ~p end", [CvUser]),
+                            ?ERROR("CvUser is ~p end", [CvUser]),
                             S = term_to_binary("success"),
                             N = term_to_binary(Name),
                             Packet = <<0000:16, (byte_size(S)):16, S/binary, (byte_size(N)):16, N/binary>>,
@@ -308,13 +308,13 @@ loop(Socket) ->
                             gen_server:call(server_example, {addSocket, CvUser#user.name, Socket}),
                             info_update(CvUser#user.name, #user.login_times, CvUser#user.login_times + 1),
                             info_update(CvUser#user.name, #user.state, 1),
-                            ?CVI("after logining ~p~n", [info_lookup(CvUser#user.name)]),
+                            ?ERROR("after logining ~p~n", [info_lookup(CvUser#user.name)]),
                             gen_tcp:send(Socket, Packet),
-                            ?CVI("user ~p have logged~n", [Name]),
+                            ?ERROR("user ~p have logged~n", [Name]),
                             loop(Socket);
 
                         [] ->
-                            ?CVI("you haved not registered yet"),
+                            ?ERROR("you haved not registered yet"),
                             F = term_to_binary("failed"),
                             N = term_to_binary(Name),
                             Packet = <<0000:16, (byte_size(F)):16, F/binary, (byte_size(N)):16, N/binary>>,
@@ -333,7 +333,7 @@ loop(Socket) ->
                             N = term_to_binary({"ok", "received"}),
                             Len = byte_size(N),
                             Packet = <<0001:16, Len:16, N/binary>>,
-                            ?CVI("received  the  Msg  ~ts : ~ts~n", [Name, Msg]),
+                            ?ERROR("received  the  Msg  ~ts : ~ts~n", [Name, Msg]),
                             %广播信息
                             gen_tcp:send(Socket, Packet),
                             gen_server:call(server_example, {sendAllMessage, Name, Msg}),
@@ -342,7 +342,7 @@ loop(Socket) ->
                             N = term_to_binary({"failed", "noLogin"}),
                             Len = byte_size(N),
                             Packet = <<0001:16, Len:16, N/binary>>,
-                            ?CVI("user ~p  no login", [Name]),
+                            ?ERROR("user ~p  no login", [Name]),
                             gen_tcp:send(Socket, Packet),
                             loop(Socket)
                     end;
@@ -371,7 +371,7 @@ loop(Socket) ->
                             N = term_to_binary({"failed", "noLogin"}),
                             Len = byte_size(N),
                             Packet = <<0003:16, Len:16, N/binary>>,
-                            ?CVI("user ~p  no login", [Name]),
+                            ?ERROR("user ~p  no login", [Name]),
                             gen_tcp:send(Socket, Packet),
                             loop(Socket)
                     end;
@@ -379,7 +379,7 @@ loop(Socket) ->
 
                 0002 ->
                     Name = binary_to_term(Str2),
-                    ?CVI("see ~p: ~p~n", [Name, info_lookup(Name)]),
+                    ?ERROR("see ~p: ~p~n", [Name, info_lookup(Name)]),
                     [#user{login_times = _Log, last_login = _LastLo}] = info_lookup(Name),
                     Last = calendar:now_to_local_time(erlang:timestamp()), % 4.格式化时间
                     % mysocket里，去除这个socket。
@@ -390,26 +390,26 @@ loop(Socket) ->
                     %修改最后登录时间
                     info_update(Name, 7, Last),
                     info_update(Name, 8, 0),
-                    ?CVI("after logout ~p", [info_lookup(Name)]),
+                    ?ERROR("after logout ~p", [info_lookup(Name)]),
                     loop(Socket)
 
             end;
 
         {tcp_closed, Socket} ->  %此时不再循环loop这个服务器分裂的进程结束
-            ?CVI("Server socket is ~p closed", [Socket]),
+            ?ERROR("Server socket is ~p closed", [Socket]),
             NN = case ets:match(mysocket, {'$1', Socket}) of
                      [[Name2]] ->
 
-                         ?CVI("user:~p  close client", [Name2]),
+                         ?ERROR("user:~p  close client", [Name2]),
                          Name2;
 
                      F ->
-                         ?CVI("yijing logout le is ~p end", [F]),
+                         ?ERROR("yijing logout le is ~p end", [F]),
                          "ddd"
                  end,
             case NN of
                 "ddd" ->
-                    ?CVI("yijing logout le");
+                    ?ERROR("yijing logout le");
 
                 Name ->
                     [#user{login_times = _Log, last_login = _LastLo}] = info_lookup(Name),
@@ -417,7 +417,7 @@ loop(Socket) ->
                     gen_server:call(server_example, {deleteSocket, Name, Socket}),
                     info_update(Name, 7, Last),
                     info_update(Name, 8, 0),
-                    ?CVI("after logout ~p", [info_lookup(Name)])
+                    ?ERROR("after logout ~p", [info_lookup(Name)])
 
             end
 

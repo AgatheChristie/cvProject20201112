@@ -1,0 +1,531 @@
+#!/usr/bin/env escript
+%% coding: latin-1
+%%----------------------------------------------------------------------
+%% -*- erlang -*-
+%%! -smp disable
+%%
+%% @author liyiming
+%% @date 2016-08-25
+%% @doc 根据配置生成mysql存取函数
+%%      做了些定制的优化,假设表的第一个字段是key,且名字是id的话,
+%%      用起来会比较爽快。。。
+%%
+%%----------------------------------------------------------------------
+-mode(compile).
+-define(P(D), io:format(D++"\n")).
+-define(P(F, D), io:format(F++"\n", D)).
+-define(ERROR(D), io:format("[error]" ++ D ++ "\n")).
+-define(ERROR(F, D), io:format("[error]" ++ F ++ "\n", D)).
+-define(A2S(A), erlang:atom_to_list(A)).
+
+-define(ENCODE_FUNC, "to_binary").
+-define(DECODE_FUNC, "to_term").
+
+-define(HEAD_FILE, "tab.hrl").
+
+-record(col, {name, type, sync, def, loop}).
+
+main([ConfFile, HrlDir, ErlDir]) -> 
+    {ok, List} = file:consult(ConfFile),
+    % 获取db模块
+    DBMod = get_db_mod(List),
+    TabList = convert_col(List, []), 
+    % 生成头文件
+    gen_head_file(TabList, HrlDir),
+    % 生成编解码文件
+    DBMod2 = if erlang:is_list(DBMod) -> DBMod; true -> ?A2S(DBMod) end,
+    gen_erl_file(TabList, TabList, DBMod2, ErlDir), 
+    ok;
+main(_) ->
+    ?ERROR("用法错误！~s 配置文件 头文件路径 代码路径", [escript:script_name()]).
+
+%% 获取db模块
+get_db_mod([{db_mod, Mod}|_]) ->
+    Mod;
+get_db_mod([_|T]) ->
+    get_db_mod(T);
+get_db_mod([]) ->
+    ?ERROR("没有配置db_mod"),
+    erlang:exit(1).
+
+%% 列转化
+convert_col([{db_mod, _}|T], Acc) ->
+    convert_col(T, Acc);
+convert_col([{Tab, FieldList}|T], Acc) ->
+    convert_col([{Tab, FieldList, none}|T], Acc);
+convert_col([{Tab, FieldList, CallBack}|T], Acc) ->
+    FieldList2 =
+    lists:map(
+        fun(Field) ->
+            case Field of
+                {l, Name, Type} -> Sync = true, Loop=true, Def=[];
+                {l, Name, Type, Sync} -> Loop=true, Def=[];
+                {l, Name, Type, Sync, Def} -> Loop=true;
+                {Name, Type} -> Sync = true, Loop=false, Def=get_default_by_type(Type);
+                {Name, Type, Sync} -> Loop=false, Def=get_default_by_type(Type);
+                {Name, Type, Sync, Def} -> Loop=false
+            end,
+            %
+            #col{name=Name, type=Type, sync=Sync, def=Def, loop=Loop}
+        end, FieldList),
+    convert_col(T, [{Tab, FieldList2, CallBack} | Acc]);
+convert_col([_|T], Acc) ->
+    convert_col(T, Acc);
+convert_col([], Acc) ->
+    Acc.
+
+%% 生成头文件
+gen_head_file([], _OutDir) ->
+    ok;
+gen_head_file(TabList, OutDir) ->
+    gen_head_file(TabList, OutDir, []).
+
+gen_head_file([{Tab, FieldList, _CallBack}|T], OutDir, Acc) ->
+    FieldList2 = [ io_lib:format("~p = ~p", [Name, Def]) || #col{name=Name, def=Def} <- FieldList],
+    FieldStr = string:join(FieldList2, ", \n	"),
+    Str = io_lib:format("-record(~p, {\n	~s}).\n\n", [Tab, FieldStr]),
+    %
+    gen_head_file(T, OutDir, [Str|Acc]);
+
+gen_head_file([], OutDir, Acc) ->
+    HeadStr = 
+"%%%----------------------------------------------------------------------
+%% coding: latin-1
+%%%
+%%% @author: liyiming
+%%% @doc: （自动生成,请勿编辑!)
+%%%
+%%%----------------------------------------------------------------------
+\n",
+    FileName = filename:join([OutDir, ?HEAD_FILE]),
+    
+    ok = file:write_file(FileName, [HeadStr | Acc]),
+    ok.
+
+get_default_by_type(int) ->
+    0;
+get_default_by_type(bool) ->
+    false;
+get_default_by_type(string) ->
+    <<>>;
+get_default_by_type(_) ->
+    none.
+
+%% 生成转换文件
+gen_erl_file([{Tab, FieldList, CallBack}|T], TabList, DB, OutDir) ->
+    HeadStr = get_head_str(Tab), 
+    % 
+    ToRowStr = gen_to_row(Tab, FieldList),
+    {FieldList2, ToRecStr} = gen_to_rec(Tab, FieldList, TabList),
+    FieldList3 = [ "\"" ++ string:to_lower(F) ++ "\"" || F <- FieldList2 ],
+    FieldStr = io_lib:format("fields() -> \n    [~s].\n\n", [string:join(FieldList3, ", ")]),
+    %
+    {_TFieldList2, TToRecStr} = gen_to_rec_t(Tab, FieldList, TabList),
+    %
+    DeCodeStr = "to_term(<<>>) -> none; to_term(Binary) -> binary_to_term(Binary).\n\n",
+    EncodeStr = "to_binary(none) -> <<>>; to_binary('_') -> '_'; to_binary(['_' | _T]) -> '_'; to_binary(Term) -> term_to_binary(Term).\n\n",
+    %
+    InsertStr = get_insert_str(DB),
+    InsertnextStr = get_insert_next_str(DB),
+    DelStr = get_del_str(DB),
+    SelectStr = get_select_str(DB, CallBack),
+    UpdateStr = get_update_str(DB),
+    ReplaceStr = get_replace_str(DB),
+    FirstTabStr = get_first_tab_str(Tab),
+    TabStr = get_tab_str(Tab),
+
+    % 
+    ModName = io_lib:format("~p.erl", [Tab]),
+    FileName = filename:join([OutDir, ModName]),
+    FileStr = io_lib:format("~s~s~s~s~s~s~s~s~s~s~s~s~s~s~s", [HeadStr, FieldStr, DeCodeStr, EncodeStr, ToRowStr, ToRecStr, TToRecStr, InsertStr, InsertnextStr, DelStr, SelectStr, UpdateStr, ReplaceStr, FirstTabStr, TabStr]),
+    ok = file:write_file(FileName, FileStr),
+    gen_erl_file(T, TabList, DB, OutDir);
+gen_erl_file([], _TabList, _DB, _OutDir) ->
+    ok.
+
+get_head_str(Tab) ->
+    Str = 
+"%% coding: latin-1
+%%%----------------------------------------------------------------------
+%%%
+%%% @author: liyiming
+%%% @doc: （自动生成,请勿编辑!)
+%%%
+%%%----------------------------------------------------------------------
+-module(~p).
+
+-export([
+    fields/0
+    , to_term/1
+    , to_binary/1
+    , to_row/1
+    , to_row/2
+    , to_rec/1
+    , to_rec_list/1
+    , to_rec_t/1
+    , to_rec_list_t/1
+    , insert/3
+    , insert_next/3
+    , delete/3
+    , select/2
+    , select/3
+    , select/4
+    , select/5
+    , select/6
+    , select/7
+    , update/3
+    , update/4
+    , update/5
+    , replace/3
+    , first_tab/0
+    , assign_tab/2
+]).
+\n",
+    io_lib:format(Str, [Tab]).
+
+%% rec -> row
+gen_to_row(Tab, FieldList) ->
+    {FieldList2, EncodeList, DefEncodeList, Flatten} =
+    lists:foldl(
+        fun(#col{name=Name, sync=true, type=Type, loop=Loop}, {AccField, AccEncode, AccDef, AccFlatten}) ->
+            Tag = get_type_tag(Type),
+            % 是否需要扁平化
+            AccFlatten2 = 
+            case AccFlatten of
+                true -> true;
+                _ when Tag =:= custom, (not Loop) -> true;
+                _ -> false
+            end, 
+            
+            NameStr = string:to_upper(?A2S(Name)),
+            EncodeStr = get_encode_str(NameStr, Type, Tag, Loop),
+            DefStr = io_lib:format("~p", [get_db_default(Type)]),
+            %
+            {[NameStr|AccField], [EncodeStr|AccEncode], [DefStr | AccDef], AccFlatten2};
+           (#col{name=Name}, {AccField, AccEncode, AccDef, AccFlatten}) ->
+            NameStr = "_" ++ string:to_upper(?A2S(Name)),
+            {[NameStr|AccField], AccEncode, AccDef, AccFlatten}
+        end, {[], [], [], false}, FieldList),
+    FieldStr = string:join(lists:reverse(FieldList2), ", "),
+    EncodeStr = string:join(lists:reverse(EncodeList), ", "),
+    DefEncodeStr = string:join(lists:reverse(DefEncodeList), ", "),
+    %
+    EncodeStr2 = 
+    case Flatten of
+        true -> io_lib:format("lists:flatten([~s])", [EncodeStr]);
+        _ -> io_lib:format("[~s]", [EncodeStr])
+    end, 
+    %
+    io_lib:format("to_row(Val) -> \n    to_row(Val, false).\n", [])
+    ++
+    io_lib:format("to_row({~p, ~s}, _Loop) -> \n    ~s;\n", [Tab, FieldStr, EncodeStr2])
+    ++
+    [lists:flatten(io_lib:format("to_row('_', _Loop) -> \n    [~s];\n", [string:join(["'_'" || _X <- DefEncodeList], ", ")]))]
+    ++
+    io_lib:format("to_row(none, false) -> \n    [~s];\n", [DefEncodeStr])
+    ++
+    io_lib:format("to_row(none, true) -> \n    none;\n", [])
+    ++
+    "to_row(L, Loop) when erlang:is_list(L) -> [ to_row(R, Loop) || R <- L ].\n\n".
+
+%% 获取入库的默认值
+get_db_default(int) ->
+    0;
+get_db_default(_) ->
+    <<>>.
+
+%% 获取编码方法
+get_encode_str(Name, _Type, normal, false) ->
+    Name;
+get_encode_str(Name, Type, custom, false) ->
+    io_lib:format("~p:to_row(~s, false)", [Type, Name]);
+get_encode_str(Name, Type, custom, _Loop) ->
+    io_lib:format("~s(~p:to_row(~s, true))", [?ENCODE_FUNC, Type, Name]);
+get_encode_str(Name, _Type, _Tag, _Loop) ->
+    io_lib:format("~s(~s)", [?ENCODE_FUNC, Name]).
+
+%% 获取类型标签
+get_type_tag(Type) ->
+    case lists:member(Type, [int, bool, string]) of
+        true -> normal;
+        _ when Type =:= blob -> blob;
+        _ -> custom
+    end.
+
+%% row -> rec
+gen_to_rec(Tab, FieldList, TabList) ->
+    {FieldList2, DefList, DeCodeList} =
+    lists:foldl(
+        fun(#col{name=Name, def=Def, sync=Sync, type=Type, loop=Loop}, {AccField, AccDef, AccDeCode}) ->
+            Tag = get_type_tag(Type),
+            MatchList = 
+            [begin
+                case Sync =:= false of
+                    true ->
+                        "_" ++ string:to_upper(?A2S(N));
+                    false ->
+                        string:to_upper(?A2S(N))
+                end
+            end || N <- get_field_list(Name, Type, Tag, Sync, Loop, TabList)], 
+            MatchStr = string:join(MatchList, ", "),
+            DeCodeStr = get_decode_str(MatchStr, Type, get_type_tag(Type), Sync, Def, Loop),
+            DefStr = case Sync of true -> [io_lib:format("~p", [get_db_default(Type)])]; _ -> [io_lib:format("~p", [get_db_default(Type)])] end,
+            %
+            {AccField ++ MatchList, AccDef ++ DefStr, [DeCodeStr|AccDeCode]}
+        end, {[], [], []}, FieldList),
+    FieldStr = string:join(FieldList2, ", "),
+    DeCodeStr = string:join(lists:reverse(DeCodeList), ", "),
+    DefaultStr = string:join(DefList, ", "),
+    %
+    {FieldList2,
+    io_lib:format("to_rec([~s]) -> \n	 {~p, ~s};\n", [DefaultStr, Tab, DefaultStr])
+    ++
+    io_lib:format("to_rec([~s]) -> \n    {~p, ~s}.\n\n", [FieldStr, Tab, DeCodeStr])
+    ++
+    "to_rec_list(none) -> [];\n"
+    ++
+    "to_rec_list(LL) -> [ to_rec(L) || L <- LL ].\n\n"}.
+
+get_field_list(_Name, _Type, _Tag, false, _Loop, _TabList) ->
+    [];
+get_field_list(_Name, Type, custom, _Sync, false, TabList) ->
+    case lists:keyfind(Type, 1, TabList) of
+        {_Tab, FieldList, _CallBack} ->
+            lists:flatten(
+                [ begin 
+                get_field_list(N, T, get_type_tag(T), S, L, TabList) 
+                end || #col{name=N, type=T, sync=S, loop=L} <- FieldList]
+            );
+        _ ->
+            ?ERROR("未定义的类型呀：~w", [Type]),
+            erlang:exit(1)
+    end;            
+get_field_list(Name, _Type, _Tag, _Sync, _Loop, _TabList) ->
+    [Name].
+
+%% row -> rec
+gen_to_rec_t(Tab, FieldList, TabList) ->
+    {FieldList2, DefList, DeCodeList} =
+    lists:foldl(
+        fun(#col{name=Name, def=Def, sync=Sync, type=Type, loop=Loop}, {AccField, AccDef, AccDeCode}) ->
+            Tag = get_type_tag(Type),
+            MatchList =
+            [begin
+                case Sync =:= false of
+                    true ->
+                        "_" ++ string:to_upper(?A2S(N));
+                    false ->
+                        string:to_upper(?A2S(N))
+                end
+            end || N <- get_field_list_t(Name, Type, Tag, Sync, Loop, TabList)],
+            MatchStr = string:join(MatchList, ", "),
+            DeCodeStr = get_decode_str_t(MatchStr, Type, get_type_tag(Type), Sync, Def, Loop),
+            DefStr = case Sync of true -> [io_lib:format("~p", [get_db_default(Type)])]; _ -> [io_lib:format("~p", [get_db_default(Type)])] end,
+            %
+            {AccField ++ MatchList, AccDef ++ DefStr, [DeCodeStr|AccDeCode]}
+        end, {[], [], []}, FieldList),
+    FieldStr = string:join(FieldList2, ", "),
+    DeCodeStr = string:join(lists:reverse(DeCodeList), ", "),
+    DefaultStr = string:join(DefList, ", "),
+    %
+    {FieldList2,
+    io_lib:format("to_rec_t([~s]) -> \n	   {~p, ~s};\n", [DefaultStr, Tab, DefaultStr])
+    ++
+    io_lib:format("to_rec_t([~s]) -> \n    {~p, ~s}.\n\n", [FieldStr, Tab, DeCodeStr])
+    ++
+    "to_rec_list_t(none) -> [];\n"
+    ++
+    "to_rec_list_t(LL) -> [ to_rec_t(L) || L <- LL ].\n\n"}.
+
+get_field_list_t(_Name, Type, custom, false, false, TabList) ->
+    case lists:keyfind(Type, 1, TabList) of
+        {_Tab, FieldList, _CallBack} ->
+            lists:flatten(
+                [ begin
+                get_field_list_t(N, T, get_type_tag(T), S, L, TabList)
+                end || #col{name=N, type=T, sync=S, loop=L} <- FieldList]
+            );
+        _ ->
+            ?ERROR("未定义的类型呀：~w", [Type]),
+            erlang:exit(1)
+    end;
+get_field_list_t(_Name, Type, custom, _Sync, false, TabList) ->
+    case lists:keyfind(Type, 1, TabList) of
+        {_Tab, FieldList, _CallBack} ->
+            lists:flatten(
+                [ begin
+                get_field_list_t(N, T, get_type_tag(T), S, L, TabList)
+                end || #col{name=N, type=T, sync=S, loop=L} <- FieldList]
+            );
+        _ ->
+            ?ERROR("未定义的类型呀：~w", [Type]),
+            erlang:exit(1)
+    end;
+get_field_list_t(Name, _Type, _Tag, _Sync, _Loop, _TabList) ->
+    [Name].
+
+%% 获取解码方法
+get_decode_str(_Name, _Type, _Tag, false, Def, _Loop) ->
+    io_lib:format("~p", [Def]); 
+get_decode_str(Name, _Type, normal, _Sync, _Def, false) ->
+    Name;
+get_decode_str(Name, Type, custom, _Sync, _Def, true) ->
+    io_lib:format("~p:to_rec_list(~s(~s))", [Type, ?DECODE_FUNC, Name]);
+get_decode_str(Name, Type, custom, _Sync, _Def, _Loop) ->
+    io_lib:format("~p:to_rec([~s])", [Type, Name]);
+get_decode_str(Name, _Type, _Tag, _Sync, _Def, _Loop) ->
+    io_lib:format("~s(~s)", [?DECODE_FUNC, Name]).
+
+%% 获取解码方法
+get_decode_str_t(_Name, _Type, _Tag, false, Def, _Loop) ->
+    io_lib:format("~p", [Def]);
+get_decode_str_t(Name, _Type, normal, _Sync, _Def, false) ->
+    Name;
+get_decode_str_t(Name, Type, custom, _Sync, _Def, true) ->
+    io_lib:format("~p:to_rec_list_t(~s(~s))", [Type, ?DECODE_FUNC, Name]);
+get_decode_str_t(Name, Type, custom, _Sync, _Def, _Loop) ->
+    io_lib:format("~p:to_rec_t([~s])", [Type, Name]);
+get_decode_str_t(Name, _Type, _Tag, _Sync, _Def, _Loop) ->
+    io_lib:format("~s(~s)", [?DECODE_FUNC, Name]).
+
+%% 插入函数
+get_insert_str(DB) ->
+    Str =
+"insert(PoolId, Tab, Rec) when erlang:is_tuple(Rec) ->
+    case ~s:insert(PoolId, Tab, fields(), to_row(Rec)) of
+        {updated, _} ->
+            ok;
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB]).
+    
+%% 插入函数
+get_insert_next_str(DB) ->
+    Str =
+"insert_next(PoolId, Tab, Rec) when erlang:is_tuple(Rec) ->
+    case ~s:insert_next(PoolId, Tab, fields(), to_row(Rec)) of
+        {updated, _} ->
+            ok;
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB]).
+
+%% 删除函数
+get_del_str(DB) ->
+    Str =
+"delete(PoolId, Tab, Id) when erlang:is_integer(Id) ->
+    delete(PoolId, Tab, [\"Id=\", mysql:encode(Id)]);
+delete(PoolId, Tab, Where) ->
+    case ~s:delete(PoolId, Tab, Where) of
+        {updated, _} ->
+            ok;
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB]).
+
+%% 查询函数
+get_select_str(DB, CallBack) ->
+    ToRecStr =
+    case CallBack of
+        {M, F} ->
+            io_lib:format("~p:~p(to_rec(Row))", [M, F]);
+        _ ->  
+            "to_rec(Row)"
+    end,
+    %
+    Str = 
+"select(PoolId, Tab) ->
+    select(PoolId, Tab, fields(), \"\", true).
+select(PoolId, Tab, Id) when erlang:is_integer(Id) ->
+    select(PoolId, Tab, [\"id=\", mysql:encode(Id)]);
+select(PoolId, Tab, Where) ->
+    select(PoolId, Tab, fields(), Where, true).
+select(PoolId, Tab, Fields, Where) ->
+    select(PoolId, Tab, Fields, Where, false).
+select(PoolId, Tab, Fields, Where, Convert) ->
+    case ~s:select(PoolId, Tab, Fields, Where) of
+        {selected, _, Ret} when Convert ->
+            Ret2 = [~s || Row <- Ret],
+            {ok, Ret2};
+        {selected, _, Ret} ->
+            {ok, Ret};
+        Ret ->
+            Ret
+    end.
+select(PoolId, Tab, Fields, Where, Convert, Other) ->
+    case ~s:select(PoolId, Tab, Fields, Where, Other) of
+        {selected, _, Ret} when Convert ->
+            Ret2 = [~s || Row <- Ret],
+            {ok, Ret2};
+        {selected, _, Ret} ->
+            {ok, Ret};
+        Ret ->
+            Ret
+    end.
+select(PoolId, Tab, Fields, Index, Where, Convert, Other) ->
+    case ~s:select(PoolId, Tab, Fields, Index, Where, Other) of
+        {selected, _, Ret} when Convert ->
+            Ret2 = [~s || Row <- Ret],
+            {ok, Ret2};
+        {selected, _, Ret} ->
+            {ok, Ret};
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB, ToRecStr, DB, ToRecStr, DB, ToRecStr]).
+
+%% 插入更新函数
+get_replace_str(DB) ->
+    Str =
+"replace(PoolId, Tab, Rec) when erlang:is_tuple(Rec) ->
+    case ~s:replace(PoolId, Tab, fields(), to_row(Rec)) of
+        {updated, _} ->
+            ok;
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB]).
+
+%% 更新函数
+get_update_str(DB) ->
+    Str =
+"update(PoolId, Tab, Rec) ->
+    Id = erlang:element(2, Rec),
+    update(PoolId, Tab, Rec, [\"id=\", mysql:encode(Id)]).
+update(PoolId, Tab, Rec, Where) ->
+    [_ | Fields] = fields(),
+    [_ | Values] = to_row(Rec),
+    update(PoolId, Tab, Fields, Values, Where).
+update(PoolId, Tab, Fields, Values, Where) ->
+    case ~s:update(PoolId, Tab, Fields, Values, Where) of
+        {updated, _} ->
+            ok;
+        Ret ->
+            Ret
+    end.
+\n",
+    io_lib:format(Str, [DB]).
+
+%% 指定表函数
+get_tab_str(Tab) ->
+    Str =
+"assign_tab(_Id, _TabNum) ->
+     \"~p\".
+\n",
+    io_lib:format(Str, [Tab]).
+
+%% 第一个表函数
+get_first_tab_str(Tab) ->
+    Str =
+"first_tab() ->
+     \"~p\".
+\n",
+    io_lib:format(Str, [Tab]).

@@ -26,7 +26,7 @@ start_link() ->
 
 
 
-    ?CVI("mnesia缓存 Sup = ~w", [Sup]),
+    ?ERROR("mnesia缓存 Sup = ~w", [Sup]),
     {ok, Sup}.
 
 %% sup 初始化

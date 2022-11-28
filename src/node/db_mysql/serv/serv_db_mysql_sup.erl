@@ -16,6 +16,7 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
+    ?ERROR("DB finished:~w", [qqq]),
     AChild = {server_example,
         {server_example, start_link, []},
         transient,

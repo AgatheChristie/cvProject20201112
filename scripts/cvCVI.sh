@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 # 打印错误
 error() {
     echo $(red [错误]) "<$FUNCNAME##$@>"

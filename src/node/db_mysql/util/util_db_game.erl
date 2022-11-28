@@ -14,6 +14,8 @@
 
 %% 初始化
 init_db_mysql() ->
+    DDD = application:loaded_applications(),
+    ?ERROR("ddw Sup:~p end", [DDD]),
     [ServerIp, Port, User, Pass, _DB, _Encode, PoolCount] = config:get_mysql_config(?CVSERVER),
     util_db_game:start_mysql(PoolCount, ServerIp, Port, User, Pass).
 
@@ -30,18 +32,18 @@ start_mysql(PoolId, ServerIp, Port, User, Pass) ->
 
 start_mysql2(PoolId, ServerIp, Port, User, Pass) ->
     [_ServerIp, _Port, _User, _Pass, GameDbName, Encode, _PoolCount] = config:get_mysql_config(?CVSERVER),
-    ?CVI("~p:~p:~p:~p: ~p:~p: ", [GameDbName, PoolId, ServerIp, Port, User, Pass]),
+    ?ERROR("~p:~p:~p:~p: ~p:~p: ", [GameDbName, PoolId, ServerIp, Port, User, Pass]),
     case mysql:start_link(PoolId, ServerIp, Port, User, Pass, GameDbName, fun log/4, Encode) of
         {ok, Pid} ->
             ConnectCount = 1,
             add_mysql_connect(ConnectCount, PoolId, ServerIp, Port, User, Pass, GameDbName, true),
-            ?CVI("Ip:~p,port:~w mysql powol:~w succeful", [ServerIp, Port, PoolId]),
+            ?ERROR("Ip:~p,port:~w mysql powol:~w succeful", [ServerIp, Port, PoolId]),
             {ok, Pid};
         {error, {already_started, Pid}} ->
-            ?CVI("Ip:~p,port:~w mysql pool:~w yijinqidong", [ServerIp, Port, PoolId]),
+            ?ERROR("Ip:~p,port:~w mysql pool:~w yijinqidong", [ServerIp, Port, PoolId]),
             {ok, Pid};
         {error, _Reason} ->
-            ?CVI("Ip:~p,port:~w mysql pool:~w fail :~p", [ServerIp, Port, PoolId, _Reason]),
+            ?ERROR("Ip:~p,port:~w mysql pool:~w fail :~p", [ServerIp, Port, PoolId, _Reason]),
             {error, _Reason}
     end.
 
@@ -58,5 +60,5 @@ log(_Module, _Line, debug, _FormatFun) ->
     next;
 log(Module, Line, _Level, FormatFun) ->
     {Format, Arguments} = FormatFun(),
-    ?CVI("~w:~w: " ++ Format ++ "~n", [Module, Line] ++ Arguments),
+    ?ERROR("~w:~w: " ++ Format ++ "~n", [Module, Line] ++ Arguments),
     ok.

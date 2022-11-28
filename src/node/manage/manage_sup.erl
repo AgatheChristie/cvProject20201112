@@ -35,7 +35,7 @@ start_link() ->
 
 	ok = util_manage_sup:start_manage_sup(Sup),
 
-	?CVI("Game Server Sup = ~w", [Sup]),
+	?ERROR("Game Server Sup = ~w", [Sup]),
 	{ok, Sup}.
 
 %% sup 初始化

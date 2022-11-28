@@ -21,7 +21,7 @@ start() ->
         ok = util_app:start_apps(?DB_MYSQL_START_APPS)
     catch
         Type:Error ->
-            ?CVI("qidong mysql node error:~w:~p", [Type, Error]),
+            ?ERROR("qidong mysql node error:~w:~p", [Type, Error]),
             init:stop(?STATUS_ERROR)
     end.
 
@@ -32,7 +32,7 @@ start(_Type, _StartArgs) ->
 
     {ok, Sup} = db_mysql_sup:start_link(),
 
-    ?CVI("qidong mysql:~p succ", [node()]),
+    ?ERROR("qidong mysql:~p succ", [node()]),
     {ok, Sup}.
 
 %% 单独停止游戏

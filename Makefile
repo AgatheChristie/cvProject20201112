@@ -39,6 +39,7 @@ clean-deps-beam:
 dirs:
 	(mkdir -p data; mkdir -p $(EBIN_OUTDIR))
 	(mkdir -p logs; mkdir -p logpps)
+	(mkdir -p deps; mkdir -p cvtt)
 
 apps:
 	(mkdir -p $(EBIN_OUTDIR))
@@ -51,7 +52,9 @@ copy_deps:
 	(cp -rf deps/*/ebin/*.app $(EBIN_OUTDIR))
 	(rm -rf deps/*/ebin/*.beam)
 
-
+table:
+	(rm -fr ./src/node/db_mysql/db_table/*; chmod +x ./sql/gen_tab)
+	(./sql/gen_tab ./sql/tab.conf ./include/common ./src/node/db_mysql/db_table)
 
 
 ###===================================================================

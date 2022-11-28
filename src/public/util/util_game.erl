@@ -24,7 +24,7 @@ start_child(Sup, Child) ->
         {error, {already_started, _Pid}} ->
             ok;
         Other ->
-            ?CVI(">>>>~p\n", [Other]),
+            ?ERROR(">>>>~p\n", [Other]),
             throw(Other)
     end.
 

@@ -48,7 +48,7 @@ check_enter_scene_key() ->
         {ok, NewSceneKey} ->
             {ok, NewSceneKey};
         {error, Code} ->
-            ?CVI("quanfu boss begin error:~w end", [Code]),
+            ?ERROR("quanfu boss begin error:~w end", [Code]),
             {ok, cddd}
     end.
 
