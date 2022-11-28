@@ -174,6 +174,18 @@ CREATE TABLE IF NOT EXISTS `game_win_info` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='游戏结算发奖' ROW_FORMAT=COMPRESSED;
 
+DROP TABLE IF EXISTS `world_chat`;
+CREATE TABLE IF NOT EXISTS `world_chat` (
+  `id` bigint(20) NOT NULL COMMENT '唯一标识',
+  `chat_type` int(11) NOT NULL DEFAULT '0' COMMENT '聊天类型',
+  `role_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '玩家id',
+  `chat_parts` blob NOT NULL COMMENT '聊天模板信息',
+  `chat_sec` int(11) NOT NULL COMMENT '世界聊天时间',
+  `is_light` int(11) NOT NULL DEFAULT '0' COMMENT '是否跑马灯',
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='世界聊天' ROW_FORMAT=COMPRESSED;
+
 DROP TABLE IF EXISTS `runoob_tbl`;
 CREATE TABLE IF NOT EXISTS `runoob_tbl`(
    `runoob_id` INT UNSIGNED AUTO_INCREMENT,

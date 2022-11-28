@@ -19,7 +19,7 @@ ROOTDIR=`cd $(dirname $0); pwd`
 WG_CONFIG_PATH=$ROOTDIR/etc/
 LOGS_DIR=$ROOTDIR/logpps
 WG_DB=$ROOTDIR/var/db/$NODE
-RUNAPP=bank
+RUNAPP=world
 CTLAPP=mgee_ctl
 
 #echo "root is $ROOTDIR \n"

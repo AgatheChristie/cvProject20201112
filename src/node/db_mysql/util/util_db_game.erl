@@ -4,18 +4,12 @@
 
 -include("common.hrl").
 
--export([
-    init_db_mysql/0
-    , start_mysql/6
-    , start_mysql2/6
-    , add_mysql_connect/8
-    , log/4
-]).
+-compile(export_all).
 
 %% 初始化
 init_db_mysql() ->
-    GameConnectCount = 2,
-    [ServerIp, Port, User, Pass, _DB, _Encode, GamePoolCount] = config:get_mysql_config(?CVSERVER),
+    GameConnectCount = util_config:db_game_pool_connect(),
+    [ServerIp, Port, User, Pass, _DB, _Encode, GamePoolCount] = config:get_mysql_config(?GET_MYSQL_APP),
     GamePoolIds = calc_game_pool_ids(GamePoolCount),
     util_db_game:start_mysql(GamePoolIds, ServerIp, Port, User, Pass,GameConnectCount).
 
@@ -40,7 +34,7 @@ start_mysql([PoolId|TPoolIds], ServerIp, Port, User, Pass, ConnectCount) ->
     start_mysql(TPoolIds, ServerIp, Port, User, Pass, ConnectCount).
 
 start_mysql2(PoolId, ServerIp, Port, User, Pass, ConnectCount) ->
-    [_ServerIp, _Port, _User, _Pass, GameDbName, Encode, _PoolCount] = config:get_mysql_config(?CVSERVER),
+    [_ServerIp, _Port, _User, _Pass, GameDbName, Encode, _PoolCount] = config:get_mysql_config(?GET_MYSQL_APP),
     case mysql:start_link(PoolId, ServerIp, Port, User, Pass, GameDbName, fun log/4, Encode) of
         {ok, Pid} ->
             add_mysql_connect(ConnectCount, PoolId, ServerIp, Port, User, Pass, GameDbName, true),
@@ -70,3 +64,28 @@ log(Module, Line, _Level, FormatFun) ->
     ?ERROR("~w:~w: " ++ Format ++ "~n", [Module, Line] ++ Arguments),
     ok.
 
+%% 获取连接池id
+assign_pool_id(HashId) ->
+    Hash = erlang:phash2(HashId, ?ASSHIG_MAX_HASH),
+    calc_pool_id(Hash).
+
+%% 最大连接池id
+max_pool_id() ->
+    util_config:db_game_pool().
+
+%% 计算使用连接池,池大于1的时候,最大的池-1,最大的池用于其他使用
+calc_pool_id(Id) ->
+    PoolId = util_db_game:max_pool_id(),
+    case PoolId > 1 of
+        true ->
+            PoolId2 = PoolId - 1,
+            RemId = Id rem PoolId2,
+            case RemId > 0 of
+                true ->
+                    RemId;
+                false ->
+                    PoolId2
+            end;
+        false ->
+            PoolId
+    end.

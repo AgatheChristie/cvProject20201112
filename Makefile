@@ -4,14 +4,14 @@ EBIN_OUTDIR := ebin
 
 ###===================================================================
 
+compile:rebar_compile
 
+### use this
 all_rebuild:get-deps clean build
 
 build:dirs all_compile
 
 all_compile:apps table compile  copy_deps
-
-compile:rebar_compile
 
 ###===================================================================
 quick_build: dirs all_compile

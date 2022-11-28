@@ -10,44 +10,31 @@
 -include("common.hrl").
 -include("db_mnesia.hrl").
 -include("node.hrl").
+-include("tab.hrl").
 
 
--export([
-    init_mnesia_db/0
-    , init_mnesia_db2/1
-    , import_table_defines/0
-    , table_defines/0
-    , table_defines_fix/0
-    , table_defines_dynamic/0
-    , node_table_defines/2
-    , line_table_defines/2
-    , role_base_table_defines/2
-    , role_game_table_defines/2
-    , role_gateway_table_defines/2
-    , role_fight_table_defines/2
-    , role_detail_table_defines/2
-%%    , role_offline_table_defines/2
-    , role_collect_table_defines/2
-    , dummy_table_defines/2
-    , dummy_detail_table_defines/2
-    , rank_info_table_defines/0
-    , rank_info_table_defines2/2
-    , arena_match_table_defines/0
-    , arena_match_table_defines2/2
-    , snapshot_table_defines/0
-    , snapshot_table_defines2/2
-]).
+-compile(export_all).
+
+%% 检查是否落地缓存
+check_is_save(IsSave, IsSaveSec, IsTimer) ->
+    ?IF(IsSave =:= ?MNESIA_IS_SAVE, next, ?C2SERR(?E_NOT_NEED_SAVE_DATA)),
+    case IsTimer of
+        true ->
+            NowSec = util_time:now_sec(),
+            DiffSec = NowSec - IsSaveSec,
+            ?IF(DiffSec >= ?MNESIA_SAVE_SEC, next, ?C2SERR(?E_NOT_NEED_SAVE_SEC));
+        false ->
+            next
+    end.
 
 %% 初始化mnesia数据库表
 init_mnesia_db() ->
     TabDefines = util_mnesia:table_defines(),
-    init_mnesia_db2(TabDefines),
-    init_data().
+    init_mnesia_db2(TabDefines).
 
 init_mnesia_db2([]) ->
     ok;
-init_mnesia_db2(TabDefines) ->
-    [{Tab, TabDefine} | TTabDefines] = TabDefines,
+init_mnesia_db2([{Tab, TabDefine} | TTabDefines]) ->
     mnesia:create_table(Tab, TabDefine),
     init_mnesia_db2(TTabDefines).
 
@@ -71,67 +58,55 @@ table_defines_fix() ->
         {?DB_ICON_M, ?RAM_TABLE(set, icon_m)},
         {?DB_PUBLIC_MAIL_M, ?RAM_TABLE(set, public_mail_m)},
         {?DB_WORLD_CHAT_M, ?RAM_TABLE(set, world_chat_m)},
-        {?DB_HANGHUI_M, ?RAM_TABLE(set, hanghui_m)},
         {?DB_PUBLIC_PLAY_M, ?RAM_TABLE(set, public_play_m)},
-        {?DB_PLAY_REFRESH_M, ?RAM_TABLE(set, play_refresh_m)},
+        {?DB_LEAGUE_M, ?RAM_TABLE(set, league_m)},
         {?DB_MERGE_SERVER_M, ?RAM_TABLE(set, merge_server_m)},
         {?DB_ACTIVE_CHAT_M, ?RAM_TABLE(set, active_chat_m)},
-        {?DB_DUMMY_SELECT_M, ?RAM_TABLE(set, dummy_select_m)},
-        {?DB_DUMMY_GROW_M, ?RAM_TABLE(set, dummy_grow_m)},
-        {?DB_ROLE_NAME_USED_M, ?RAM_TABLE(set, role_name_used_m)},
         {?DB_CROSS_M, ?RAM_TABLE(set, cross_m)},
-        {?DB_TEAM_M, ?RAM_TABLE(set, team_m)},
-        {?DB_BAN_M, ?RAM_TABLE(set, ban_m)},
         {?DB_RUN_LIGHT_M, ?RAM_TABLE(set, run_light_m)},
         {?DB_ACTIVITY_M, ?RAM_TABLE(set, activity_m)},
         {?DB_ACTIVITY_GROUP_M, ?RAM_TABLE(set, activity_group_m)},
         {?DB_ACTIVITY_MIX_M, ?RAM_TABLE(set, activity_mix_m)},
-        {?DB_MARKET_M, ?RAM_TABLE(set, market_m)},
-        {?DB_MARKET_ROLE_M, ?RAM_TABLE(set, market_role_m)},
-        {?DB_AUCTION_M, ?RAM_TABLE(set, auction_m)},
-        {?DB_KINGDOM_PLAYER_M, ?RAM_TABLE(set, kingdom_player_m)},
-        {?DB_FB_SCENE_M, ?RAM_TABLE(set, fb_scene_m)},
-        {?DB_SERVER_BOSS_PLAYER_M, ?RAM_TABLE(set, server_boss_player_m)},
-        {?DB_HANGHUI_WAR_M, ?RAM_TABLE(set, hanghui_war_m)},
-        {?DB_HANGHUI_WAR_PLAYER_M, ?RAM_TABLE(set, hanghui_war_player_m)},
-        {?DB_ANCIENT_M, ?RAM_TABLE(set, ancient_m)},
-        {?DB_BOSS_HP_M, ?RAM_TABLE(set, boss_hp_m)},
-        {?DB_DARK_TEMPLE_M, ?RAM_TABLE(set, dark_temple_m)},
-        {?DB_DARK_TEMPLE_SCENE_M, ?RAM_TABLE(set, dark_temple_scene_m)},
-        {?DB_MINE_HOLE_M, ?RAM_TABLE(set, mine_hole_m)},
-        {?DB_CONVOY_PLAYER_M, ?RAM_TABLE(set, convoy_player_m)},
-        {?DB_NEARBY_MATCH_M, ?RAM_TABLE(set, nearby_match_m)},
-        {?DB_WARCRAFT_PLAYER_M, ?RAM_TABLE(set, warcraft_player_m)},
-        {?DB_WARCRAFT_HANGHUI_M, ?RAM_TABLE(set, warcraft_hanghui_m)},
-        {?DB_DARK_SHRINE_SCENE_M, ?RAM_TABLE(set, dark_shrine_scene_m)},
-        {?DB_DARK_SHRINE_FIGHT_M, ?RAM_TABLE(set, dark_shrine_fight_m)},
-        {?DB_DARK_SHRINE_FIGHT_SCENE_M, ?RAM_TABLE(set, dark_shrine_fight_scene_m)},
-        {?DB_ETERNAL_TOWER_M, ?RAM_TABLE(set, eternal_tower_m)},
-        {?DB_HANGHUI_CROSS_WAR_M, ?RAM_TABLE(set, hanghui_cross_war_m)},
-        {?DB_HANGHUI_CROSS_WAR_PLAYER_M, ?RAM_TABLE(set, hanghui_cross_war_player_m)}
+        {?DB_CITY_M, ?RAM_TABLE(set, city_m)},
+        {?DB_ROLE_ORDER_M, ?RAM_TABLE(set, role_order_m)},
+        {?DB_TEAM_ORDER_M, ?RAM_TABLE(set, team_order_m)},
+        {?DB_BATTLE_INFO_M, ?RAM_TABLE(set, battle_info_m)},
+        {?DB_BATTLE_REPORT_INFO_M, ?RAM_TABLE(set, battle_report_info_m)},
+        {?DB_CAMP_INFO_M, ?RAM_TABLE(set, camp_info_m)},
+        {?DB_PLOT_MON_M, ?RAM_TABLE(set, plot_mon_m)},
+        {?DB_FIGHT_SOCKET_M, ?RAM_TABLE(set, fight_socket_m)},
+        {?DB_WHOLE_ROLE_M, ?RAM_TABLE(set, whole_role_m)},
+        {?DB_TREND_INFO_M, ?RAM_TABLE(set, trend_info_m)},
+        {?DB_VOTE_INFO_M, ?RAM_TABLE(set, vote_info_m)},
+        {?DB_SUBJECT_M, ?RAM_TABLE(set, subject_m)},
+        {?DB_PUBLIC_PRIVILEGE_M, ?RAM_TABLE(set, public_privilege_m)},
+        {?DB_MJ_CHALLENGE_INFO_M, ?RAM_TABLE(set, mj_challenge_info_m)}
     ].
 
 %% 动态表定义
 table_defines_dynamic() ->
-    MaxNodeType = 18,
+    MaxNodeType = util_node:convert_node_type(?MAX_NODE_TYPE),
     NodeTabs = node_table_defines(MaxNodeType, []),
     LineTabs = line_table_defines(MaxNodeType, []),
     RoleBaseTabs = role_base_table_defines(?M_MAX_BASE_TAB, []),
     RoleGameTabs = role_game_table_defines(?M_MAX_GAME_TAB, []),
     RoleGatewayTabs = role_gateway_table_defines(?M_MAX_GATEWAY_TAB, []),
     RoleFightTabs = role_fight_table_defines(?M_MAX_FIGHT_TAB, []),
-%%    RoleOfflineTabs = role_offline_table_defines(?M_MAX_OFFLINE_TAB, []),
+    RoleOfflineTabs = role_offline_table_defines(?M_MAX_OFFLINE_TAB, []),
+    RoleSaveTabs = role_save_table_defines(?M_MAX_ROLE_SAVE_TAB, []),
+    RoleSaveMsgTabs = role_save_msg_table_defines(?M_MAX_ROLE_SAVE_MSG_TAB, []),
     RoleDetailTabs = role_detail_table_defines(?M_MAX_DETAIL_TAB, []),
     RoleCollectTabs = role_collect_table_defines(?M_MAX_COLLECT_TAB, []),
-    RoleDummyTabs = dummy_table_defines(?M_MAX_DUMMY_TAB, []),
-    DummyDetailTabs = dummy_detail_table_defines(?M_MAX_DETAIL_TAB, []),
+    RoleSimpleTabs = role_simple_table_defines(?M_MAX_SIMPLE_TAB, []),
+
     RankInfoTabs = rank_info_table_defines(),
-    ArenaMatchTabs = arena_match_table_defines(),
     SnapshotTabs = snapshot_table_defines(),
-    NodeTabs ++ LineTabs ++ RoleBaseTabs ++ RoleGameTabs ++
-        RoleGatewayTabs ++ RoleFightTabs ++ RoleDetailTabs
-        ++ RoleCollectTabs ++ RoleDummyTabs ++ DummyDetailTabs ++ RankInfoTabs
-        ++ ArenaMatchTabs ++ SnapshotTabs.
+    Types = lists:seq(1, 3),
+    BanMgrTabs = ban_mgr_table_defines(Types, []),
+    NodeTabs ++ LineTabs ++ RoleBaseTabs ++ RoleOfflineTabs ++ RoleSaveTabs ++
+        RoleSaveMsgTabs ++ RoleGameTabs ++ RoleGatewayTabs ++ RoleFightTabs ++
+        RoleDetailTabs ++ RoleCollectTabs ++ RoleSimpleTabs ++ RankInfoTabs ++
+        SnapshotTabs ++ BanMgrTabs.
 
 %% 节点表
 node_table_defines(0, Result) ->
@@ -190,12 +165,29 @@ role_detail_table_defines(MaxType, Result) ->
     role_detail_table_defines(NewMaxType, NewResult).
 
 %% 玩家离线缓存表
-%%role_offline_table_defines(0, Result) ->
-%%    Result;
-%%role_offline_table_defines(MaxType, Result) ->
-%%    NewMaxType = MaxType - 1,
-%%    NewResult = [{?DB_ROLE_OFFLINE_M(MaxType), ?RAM_TABLE(set, role)} | Result],
-%%    role_offline_table_defines(NewMaxType, NewResult).
+role_offline_table_defines(0, Result) ->
+    Result;
+role_offline_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_OFFLINE_M(MaxType), ?RAM_TABLE(set, role)} | Result],
+    role_offline_table_defines(NewMaxType, NewResult).
+
+%% 玩家保存缓存表
+role_save_table_defines(0, Result) ->
+    Result;
+role_save_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_SAVE_M(MaxType), ?RAM_TABLE(set, role_save_m)} | Result],
+    role_save_table_defines(NewMaxType, NewResult).
+
+%% 玩家保存离线信息缓存表
+role_save_msg_table_defines(0, Result) ->
+    Result;
+role_save_msg_table_defines(MaxType, Result) ->
+    NewMaxType = MaxType - 1,
+    NewResult = [{?DB_ROLE_SAVE_MSG_M(MaxType), ?RAM_TABLE(set, role_save_msg_m)} | Result],
+    role_save_msg_table_defines(NewMaxType, NewResult).
+
 %% 玩家简单收集表
 role_collect_table_defines(0, Result) ->
     Result;
@@ -204,31 +196,22 @@ role_collect_table_defines(MaxType, Result) ->
     NewResult = [{?DB_ROLE_COLLECT_M(MaxType), ?RAM_TABLE(set, role_collect_m)} | Result],
     role_collect_table_defines(NewMaxType, NewResult).
 
-%% 玩家假人缓存表
-dummy_table_defines(0, Result) ->
+%% 玩家简单信息表
+role_simple_table_defines(0, Result) ->
     Result;
-dummy_table_defines(MaxType, Result) ->
+role_simple_table_defines(MaxType, Result) ->
     NewMaxType = MaxType - 1,
-    NewResult = [{?DB_DUMMY_M(MaxType), ?RAM_TABLE(set, dummy_m)} | Result],
-    dummy_table_defines(NewMaxType, NewResult).
-
-%% 假人详细缓存表
-dummy_detail_table_defines(0, Result) ->
-    Result;
-dummy_detail_table_defines(MaxType, Result) ->
-    NewMaxType = MaxType - 1,
-    NewResult = [{?DB_DUMMY_DETAIL_M(MaxType), ?RAM_TABLE(set, dummy_detail_m)} | Result],
-    dummy_detail_table_defines(NewMaxType, NewResult).
+    NewResult = [{?DB_ROLE_SIMPLE_M(MaxType), ?RAM_TABLE(set, role_simple_m)} | Result],
+    role_simple_table_defines(NewMaxType, NewResult).
 
 %% 排行榜信息
 rank_info_table_defines() ->
-    RankTypes = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1011, 1015, 1009, 1017, 1014, 1016, 1022, 1020, 1019, 1018, 1010, 1013, 1021, 1012, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034],
+    RankTypes = [1,2,3],
     rank_info_table_defines2(RankTypes, []).
 
 rank_info_table_defines2([], Result) ->
     Result;
-rank_info_table_defines2(RankTypes, Result) ->
-    [RankType | TRankTypes] = RankTypes,
+rank_info_table_defines2([RankType | TRankTypes], Result) ->
     DefinesList =
         [
             {?DB_RANK_INFO_M(RankType), ?RAM_TABLE(set, rank_info_m)}
@@ -236,31 +219,14 @@ rank_info_table_defines2(RankTypes, Result) ->
     NewResult = DefinesList ++ Result,
     rank_info_table_defines2(TRankTypes, NewResult).
 
-%% 竞技场匹配
-arena_match_table_defines() ->
-    GroupIds = [1, 2, 3, 4, 5, 6, 7, 8],
-    arena_match_table_defines2(GroupIds, []).
-
-arena_match_table_defines2([], Result) ->
-    Result;
-arena_match_table_defines2(GroupIds, Result) ->
-    [GroupId | TGroupIds] = GroupIds,
-    DefinesList =
-        [
-            {?DB_ARENA_MATCH_M(GroupId), ?RAM_TABLE(set, arena_match_m)}
-        ],
-    NewResult = DefinesList ++ Result,
-    arena_match_table_defines2(TGroupIds, NewResult).
-
 %% 快照信息
 snapshot_table_defines() ->
-    SnapshotTypes = [1001, 1002],
+    SnapshotTypes = [1,2,3],
     snapshot_table_defines2(SnapshotTypes, []).
 
 snapshot_table_defines2([], Result) ->
     Result;
-snapshot_table_defines2(SnapshotTypes, Result) ->
-    [SnapshotType | TSnapshotTypes] = SnapshotTypes,
+snapshot_table_defines2([SnapshotType | TSnapshotTypes], Result) ->
     DefinesList =
         [
             {?DB_SNAPSHOT_M(SnapshotType), ?RAM_TABLE(set, snapshot_m)}
@@ -268,24 +234,9 @@ snapshot_table_defines2(SnapshotTypes, Result) ->
     NewResult = DefinesList ++ Result,
     snapshot_table_defines2(TSnapshotTypes, NewResult).
 
-init_data() ->
-    MBossPlayer = #server_boss_player_m{
-        role_id = 700001,
-        player_status = 1,
-        total_damage = 40000
-    },
-    util_m_server_boss_player:add_server_boss_player(MBossPlayer),
-    MBossPlayer2 = #server_boss_player_m{
-        role_id = 700002,
-        player_status = 2
-    },
-    util_m_server_boss_player:add_server_boss_player(MBossPlayer2),
-    MBossPlayer3 = #server_boss_player_m{
-        role_id = 700003,
-        player_status = 1
-    },
-    util_m_server_boss_player:add_server_boss_player(MBossPlayer3),
-    ok.
-
-
-
+%% 封禁管理
+ban_mgr_table_defines([], Result) ->
+    Result;
+ban_mgr_table_defines([Type | Types], Result) ->
+    NewResult = [{?DB_BAN_MGR_M(Type), ?RAM_TABLE(set, ban_mgr_m)} | Result],
+    ban_mgr_table_defines(Types, NewResult).

@@ -154,3 +154,18 @@
 	game_win_status = 0, 
 	touch_sec = 0}).
 
+-record(world_chat, {
+	id = 0, 
+	chat_type = 0, 
+	role_id = 0, 
+	chat_parts = [], 
+	chat_sec = 0, 
+	is_light = 0}).
+
+-record(chat_part, {
+	type = 0, 
+	content = <<>>, 
+	int_values = [], 
+	string_values = [], 
+	template_id = 0}).
+

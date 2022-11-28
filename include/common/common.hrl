@@ -26,7 +26,7 @@
 %% 定义boolean
 -define(TRUE, true).
 -define(FALSE, false).
--define(E_DB, 7777).
+
 %% 游戏数据库连接池数量
 -define(DB_GAME_POOL, 1).
 %% 定义record默认值
@@ -44,7 +44,7 @@
         do_cast(Req, State)
     catch
         Class:Error ->
-
+            ?ERROR("handle cast:~w        error ~p:~p", [Req, Class, Error]),
             {noreply, State}
     end).
 
@@ -54,8 +54,8 @@
     try
         do_call(Req, From, State)
     catch
-        _Class:_Error ->
-
+        Class:Error ->
+            ?ERROR("handle call:~w       error ~w:~w", [Req, Class, Error]),
             {noreply, State}
     end).
 %% 封装处理handle_info
@@ -63,8 +63,8 @@
     try
         do_info(Req, State)
     catch
-        _Class:_Error ->
-
+        Class:Error ->
+            ?ERROR("handle info:~w       error ~w:~w", [Req, Class, Error]),
             {noreply, State}
     end).
 
@@ -73,8 +73,8 @@
     try
         (Fun)
     catch
-        _Class:_Error ->
-
+        Class:Error ->
+            ?ERROR("try_catch_exception:~w:~w", [Class, Error]),
             ok
     end).
 
@@ -139,9 +139,8 @@
 %% 服务器类型
 -define(GAME_SERVER, 0).                                                  %% 游戏服
 -define(CROSS_SERVER, 1).                                                 %% 跨服
-%% 服务器
--define(CVSERVER, db_mysql).                                                  %% 服务器
-%%  -define(CVSERVER, manage).                                            %% 服务器
+
+-define(GET_MYSQL_APP, world).
 
 %% 一分钟
 -define(ONE_MIN, 60).
@@ -176,9 +175,10 @@
 -define(L2B(S), list_to_bitstring(S)).
 
 
-
-
-
-
+%% =================================================================
+-define(E_DB, 7777).        %%数据库出错
+-define(E_ERROR_HANLE, 1).  %%后台逻辑错误
+-define(E_NOT_NEED_SAVE_DATA, 45).  %%不需要持久数据
+-define(E_NOT_NEED_SAVE_SEC, 46).  %%持久数据时间间隔未到
 -endif.
 
