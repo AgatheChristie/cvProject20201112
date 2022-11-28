@@ -1,0 +1,131 @@
+[2022-11-28 16:08:29]<E>(<0.9.0>:bank:14) : Start bank All APP!</E>
+[2022-11-28 16:08:29]<E>(<0.143.0>:serv_db_mysql_sup:19) : DB finished:qqq</E>
+[2022-11-28 16:08:29]<E>(<0.148.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 16:08:29]<E>(<0.148.0>:util_db_game:18) : ddw Sup:[{public_key,
+                                           "Public key infrastructure","1.9"},
+                                          {inets,"INETS  CXC 138 49","7.3"},
+                                          {sasl,"SASL  CXC 138 11","4.0.1"},
+                                          {stdlib,"ERTS  CXC 138 10","3.13.2"},
+                                          {crypto,"CRYPTO","4.8"},
+                                          {kernel,"ERTS  CXC 138 10","7.1"},
+                                          {ssl,"Erlang/OTP SSL application",
+                                           "10.1"},
+                                          {db_mysql,"db_mysql application.",
+                                           "0.1"},
+                                          {asn1,
+                                           "The Erlang ASN1 compiler version 5.0.14",
+                                           "5.0.14"}] end</E>
+[2022-11-28 16:08:29]<E>(<0.148.0>:util_db_game:35) : "mmo_s1":1:"127.0.0.1":3306: "root":"123456": </E>
+[2022-11-28 16:08:29]<E>(<0.162.0>:util_db_game:63) : mysql:585: added connection with id '1' (pid <0.167.0>) to my list
+</E>
+[2022-11-28 16:08:29]<E>(<0.148.0>:util_db_game:40) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 16:08:29]<E>(<0.148.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 16:08:29]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 16:08:29]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 16:26:11]<E>(<0.9.0>:bank:14) : Start bank All APP!</E>
+[2022-11-28 16:26:11]<E>(<0.143.0>:serv_db_mysql_sup:19) : DB finished:qqq</E>
+[2022-11-28 16:26:11]<E>(<0.148.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 16:26:11]<E>(<0.154.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.159.0>) to my list
+</E>
+[2022-11-28 16:26:11]<E>(<0.154.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.165.0>) to my list
+</E>
+[2022-11-28 16:26:11]<E>(<0.148.0>:util_db_game:45) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 16:26:11]<E>(<0.148.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 16:26:11]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 16:26:11]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:15:43]<E>(<0.9.0>:bank:14) : Start bank All APP!</E>
+[2022-11-28 17:15:43]<E>(<0.144.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 17:15:43]<E>(<0.150.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.155.0>) to my list
+</E>
+[2022-11-28 17:15:43]<E>(<0.150.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.161.0>) to my list
+</E>
+[2022-11-28 17:15:43]<E>(<0.144.0>:util_db_game:45) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:15:43]<E>(<0.144.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 17:15:43]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:15:43]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:19:51]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:19:51]<E>(<0.144.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 17:19:51]<E>(<0.150.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.155.0>) to my list
+</E>
+[2022-11-28 17:19:51]<E>(<0.150.0>:util_db_game:68) : mysql:585: added connection with id '1' (pid <0.161.0>) to my list
+</E>
+[2022-11-28 17:19:51]<E>(<0.144.0>:util_db_game:45) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:19:51]<E>(<0.144.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 17:19:51]<E>(<0.104.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:19:51]<E>(<0.104.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:20:08]<E>(<0.105.0>:cawf:118) : aawf:qwd {'EXIT',{{function_clause,[{gen,do_for_proc,[{db_mysql_1,[99,118,98,97,110,107,64,49,57,50,46,49,54,56,46,49,46,49,57,55]},#Fun<gen.0.110169649>],[{file,[103,101,110,46,101,114,108]},{line,311}]},{gen_server,call,3,[{file,[103,101,110,95,115,101,114,118,101,114,46,101,114,108]},{line,242}]},{util,gen_rpc_call,4,[{file,[115,114,99,47,112,117,98,108,105,99,47,117,116,105,108,47,117,116,105,108,46,101,114,108]},{line,357}]},{cawf,awdwrite_sync,1,[{file,[115,114,99,47,110,111,100,101,47,122,97,119,117,47,99,97,119,102,46,101,114,108]},{line,113}]},{erl_eval,do_apply,6,[{file,[101,114,108,95,101,118,97,108,46,101,114,108]},{line,684}]},{shell,exprs,7,[{file,[115,104,101,108,108,46,101,114,108]},{line,686}]},{shell,eval_exprs,7,[{file,[115,104,101,108,108,46,101,114,108]},{line,642}]},{shell,eval_loop,3,[{file,[115,104,101,108,108,46,101,114,108]},{line,627}]}]},{gen_server,call,[{db_mysql_1,[99,118,98,97,110,107,64,49,57,50,46,49,54,56,46,49,46,49,57,55]},{aawrite_sync},10000]}}}</E>
+[2022-11-28 17:23:01]<E>(<0.144.0>:serv_db_mysql_mgr:43) : DB finished:undefined</E>
+[2022-11-28 17:23:51]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:23:51]<E>(<0.144.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 17:23:51]<E>(<0.150.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.155.0>) to my list
+</E>
+[2022-11-28 17:23:51]<E>(<0.150.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.161.0>) to my list
+</E>
+[2022-11-28 17:23:51]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:23:51]<E>(<0.144.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 17:23:51]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:23:51]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:25:03]<E>(<0.102.0>:cawf:118) : aawf:qwd {'EXIT',{{function_clause,[{gen,do_for_proc,[{db_mysql_1,[99,118,98,97,110,107,64,49,57,50,46,49,54,56,46,49,46,49,57,55]},#Fun<gen.0.110169649>],[{file,[103,101,110,46,101,114,108]},{line,311}]},{gen_server,call,3,[{file,[103,101,110,95,115,101,114,118,101,114,46,101,114,108]},{line,242}]},{util,gen_rpc_call,4,[{file,[115,114,99,47,112,117,98,108,105,99,47,117,116,105,108,47,117,116,105,108,46,101,114,108]},{line,357}]},{cawf,awdwrite_sync,1,[{file,[115,114,99,47,110,111,100,101,47,122,97,119,117,47,99,97,119,102,46,101,114,108]},{line,113}]},{erl_eval,do_apply,6,[{file,[101,114,108,95,101,118,97,108,46,101,114,108]},{line,684}]},{shell,exprs,7,[{file,[115,104,101,108,108,46,101,114,108]},{line,686}]},{shell,eval_exprs,7,[{file,[115,104,101,108,108,46,101,114,108]},{line,642}]},{shell,eval_loop,3,[{file,[115,104,101,108,108,46,101,114,108]},{line,627}]}]},{gen_server,call,[{db_mysql_1,[99,118,98,97,110,107,64,49,57,50,46,49,54,56,46,49,46,49,57,55]},{aawrite_sync},10000]}}}</E>
+[2022-11-28 17:27:49]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:27:49]<E>(<0.144.0>:serv_db_mysql_mgr:27) : DB finished:qqq</E>
+[2022-11-28 17:27:49]<E>(<0.150.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.155.0>) to my list
+</E>
+[2022-11-28 17:27:49]<E>(<0.150.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.161.0>) to my list
+</E>
+[2022-11-28 17:27:49]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:27:49]<E>(<0.144.0>:serv_db_mysql_mgr:29) : DB finished:qqq</E>
+[2022-11-28 17:27:49]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:27:49]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:27:56]<E>(<0.171.0>:serv_db_mysql:92) : unknown req:{aawrite_sync}</E>
+[2022-11-28 17:28:06]<E>(<0.102.0>:cawf:119) : aawf:qwd {'EXIT',{timeout,{gen_server,call,[{db_mysql_1,'cvbank@192.168.1.197'},{aawrite_sync},10000]}}}</E>
+[2022-11-28 17:33:25]<E>(<0.144.0>:serv_db_mysql_mgr:43) : DB finished:undefined</E>
+[2022-11-28 17:33:25]<I>(<0.171.0>:serv_db_mysql:61) : 数据库进程db_mysql_1 结束:undefined</I>
+[2022-11-28 17:34:23]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:34:23]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.151.0>) to my list
+</E>
+[2022-11-28 17:34:23]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.157.0>) to my list
+</E>
+[2022-11-28 17:34:23]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:34:23]<E>(<0.104.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:34:23]<E>(<0.104.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:34:58]<E>(<0.167.0>:util_db_mysql_serv:69) : 处理同步写入出错:{'EXIT',{undef,[{game_win_info,assign_tab,[1,1],[]},{db_game_win,add,1,[{file,[115,114,99,47,110,111,100,101,47,100,98,95,109,121,115,113,108,47,100,98,95,104,97,110,100,108,101,47,100,98,95,103,97,109,101,95,119,105,110,46,101,114,108]},{line,32}]},{util_db_mysql_serv,check_deal_write_sync,4,[{file,[115,114,99,47,110,111,100,101,47,100,98,95,109,121,115,113,108,47,117,116,105,108,47,117,116,105,108,95,100,98,95,109,121,115,113,108,95,115,101,114,118,46,101,114,108]},{line,58}]},{util_db_mysql_serv,deal_write_sync,4,[{file,[115,114,99,47,110,111,100,101,47,100,98,95,109,121,115,113,108,47,117,116,105,108,47,117,116,105,108,95,100,98,95,109,121,115,113,108,95,115,101,114,118,46,101,114,108]},{line,63}]},{serv_db_mysql,do_call,3,[{file,[115,114,99,47,110,111,100,101,47,100,98,95,109,121,115,113,108,47,115,101,114,118,47,115,101,114,118,95,100,98,95,109,121,115,113,108,46,101,114,108]},{line,78}]},{serv_db_mysql,handle_call,3,[{file,[115,114,99,47,110,111,100,101,47,100,98,95,109,121,115,113,108,47,115,101,114,118,47,115,101,114,118,95,100,98,95,109,121,115,113,108,46,101,114,108]},{line,44}]},{gen_server,try_handle_call,4,[{file,[103,101,110,95,115,101,114,118,101,114,46,101,114,108]},{line,706}]},{gen_server,handle_msg,6,[{file,[103,101,110,95,115,101,114,118,101,114,46,101,114,108]},{line,735}]}]}}</E>
+[2022-11-28 17:34:58]<E>(<0.167.0>:util_db_mysql_serv:70) : 处理同步写入失败:erlang:apply(db_game_win,add,[{game_win_info,1,2,777,1456,346}])</E>
+[2022-11-28 17:34:58]<E>(<0.105.0>:util_db:74) : assign_write_sync err:db_game_win {error,7777}</E>
+[2022-11-28 17:39:14]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:39:14]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.151.0>) to my list
+</E>
+[2022-11-28 17:39:14]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.157.0>) to my list
+</E>
+[2022-11-28 17:39:14]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:39:14]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:39:14]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:39:28]<E>(<0.167.0>:util_db_handle:255) : mysql_result error:"Unknown column 'win_camp_id' in 'field list'"</E>
+[2022-11-28 17:39:28]<E>(<0.102.0>:util_db:74) : assign_write_sync err:db_game_win {error,[85,110,107,110,111,119,110,32,99,111,108,117,109,110,32,39,119,105,110,95,99,97,109,112,95,105,100,39,32,105,110,32,39,102,105,101,108,100,32,108,105,115,116,39]}</E>
+[2022-11-28 17:42:06]<E>(<0.144.0>:serv_db_mysql_mgr:41) : DB finished:undefined</E>
+[2022-11-28 17:42:06]<I>(<0.167.0>:serv_db_mysql:61) : 数据库进程db_mysql_1 结束:undefined</I>
+[2022-11-28 17:46:17]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:46:17]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.151.0>) to my list
+</E>
+[2022-11-28 17:46:17]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.157.0>) to my list
+</E>
+[2022-11-28 17:46:17]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:46:17]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:46:17]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:50:56]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:50:56]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.151.0>) to my list
+</E>
+[2022-11-28 17:50:56]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.157.0>) to my list
+</E>
+[2022-11-28 17:50:56]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:50:56]<E>(<0.106.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:50:56]<E>(<0.106.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>
+[2022-11-28 17:55:32]<E>(<0.144.0>:serv_db_mysql_mgr:41) : DB finished:undefined</E>
+[2022-11-28 17:55:32]<I>(<0.167.0>:serv_db_mysql:61) : 数据库进程db_mysql_1 结束:undefined</I>
+[2022-11-28 17:56:59]<E>(<0.9.0>:bank:14) : awawf Start bank All APP!</E>
+[2022-11-28 17:56:59]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.151.0>) to my list
+</E>
+[2022-11-28 17:56:59]<E>(<0.146.0>:util_db_game:70) : mysql:585: added connection with id '1' (pid <0.157.0>) to my list
+</E>
+[2022-11-28 17:56:59]<E>(<0.144.0>:util_db_game:47) : Ip:"127.0.0.1",port:3306 mysql powol:1 succeful</E>
+[2022-11-28 17:56:59]<E>(<0.104.0>:db_mysql_sup:25) : ddw Sup = <0.142.0></E>
+[2022-11-28 17:56:59]<E>(<0.104.0>:db_mysql:35) : qidong mysql:'cvbank@192.168.1.197' succ</E>

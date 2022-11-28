@@ -26,7 +26,9 @@
 %% 定义boolean
 -define(TRUE, true).
 -define(FALSE, false).
-
+-define(E_DB, 7777).
+%% 游戏数据库连接池数量
+-define(DB_GAME_POOL, 1).
 %% 定义record默认值
 -define(NONE, none).
 

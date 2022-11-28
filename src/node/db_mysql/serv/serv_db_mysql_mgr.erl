@@ -24,9 +24,7 @@ init(_Arg) ->
     erlang:process_flag(trap_exit, true),
     %% 设置随机种子
     util_rand:seed(),
-    ?ERROR("DB finished:~w", [qqq]),
     util_db_game:init_db_mysql(),
-    ?ERROR("DB finished:~w", [qqq]),
     {ok, #state{}}.
 
 handle_call(Req, From, State) ->

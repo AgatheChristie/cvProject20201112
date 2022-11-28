@@ -39,4 +39,4 @@ critical_msg(Module, Line, Format, Args) ->
 %% Distribute the message to the Erlang error logger
 notify(Type, Format, Args) ->
     LoggerMsg = {Type, group_leader(), {self(), Format, Args}},
-    util_error_msg:write_error_log_test(LoggerMsg).
+    util_error_msg:write_error_log(LoggerMsg).

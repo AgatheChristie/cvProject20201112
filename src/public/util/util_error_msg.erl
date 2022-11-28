@@ -19,7 +19,9 @@
 %% 写日志
 write_error_log(Name, LogDataList) ->
     NowDate = calendar:now_to_local_time(util_time:now()),
-    RunLogDir = "/media/cvErlang/mmo_s1/cvProject20201112/cvttlog",
+   %% RunLogDir = "/media/server/m1_s1/cvttlog",
+    {ok, CurrentDirectory} = file:get_cwd(),
+    RunLogDir = CurrentDirectory ++ "/cvttlog",
     case true of
         true ->
             AllTime = "all",

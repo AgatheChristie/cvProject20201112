@@ -16,12 +16,11 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
-    ?ERROR("DB finished:~w", [qqq]),
-    AChild = {server_example,
-        {server_example, start_link, []},
+    AChild = {serv_db_mysql,
+        {serv_db_mysql, start_link, []},
         transient,
         30000,
         worker,
-        [server_example]
+        [serv_db_mysql]
     },
     {ok, {{simple_one_for_one, 10, 10}, [AChild]}}.

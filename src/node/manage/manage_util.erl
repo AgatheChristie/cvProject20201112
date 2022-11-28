@@ -52,5 +52,5 @@ do_stop_server() ->
 %%         ok = file:write_file(VersionFile, Str)
 %%     catch
 %%         _T:_R ->
-%%             ?ERROR(?_U("写入version.txt失败 ~w:~w"), [_T, _R])
+%%             ?ERROR("写入version.txt失败 ~w:~w", [_T, _R])
 %%     end.

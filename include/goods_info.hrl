@@ -5,7 +5,7 @@
     , quantity = 0
     , cost = 0
 }).
--record(shop,
+-record(cvshop,
 {
     item
     , quantity

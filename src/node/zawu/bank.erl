@@ -11,7 +11,7 @@ start_server() ->
 
 
 start() ->
-    ?ERROR("Start ~p All APP!", [?MODULE]),
+    ?ERROR("awawf Start ~p All APP!", [?MODULE]),
     db_mysql:start().
 %%    game:start().
 

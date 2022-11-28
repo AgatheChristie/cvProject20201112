@@ -9,7 +9,7 @@ all_rebuild:get-deps clean build
 
 build:dirs all_compile
 
-all_compile:apps compile copy_deps
+all_compile:apps table compile  copy_deps
 
 compile:rebar_compile
 
@@ -39,7 +39,7 @@ clean-deps-beam:
 dirs:
 	(mkdir -p data; mkdir -p $(EBIN_OUTDIR))
 	(mkdir -p logs; mkdir -p logpps)
-	(mkdir -p deps; mkdir -p cvtt)
+	(mkdir -p deps; mkdir -p cvttlog)
 
 apps:
 	(mkdir -p $(EBIN_OUTDIR))
