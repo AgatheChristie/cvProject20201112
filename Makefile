@@ -38,8 +38,8 @@ clean-deps-beam:
 
 dirs:
 	(mkdir -p data; mkdir -p $(EBIN_OUTDIR))
-	(mkdir -p cvLoggerLog; mkdir -p cvSaslLogs ; mkdir -p etc)
-	(mkdir -p deps; mkdir -p cvSelfLog)
+	(mkdir -p cvLoggerLogs; mkdir -p cvSaslLogs ; mkdir -p etc)
+	(mkdir -p deps; mkdir -p cvSelfLogs)
 
 apps:
 	(mkdir -p $(EBIN_OUTDIR))

@@ -17,9 +17,9 @@ doc
 # cv self file
 *.dump
 ebin
-cvSelfLog
+cvSelfLogs
 cvSaslLogs
-cvLoggerLog
+cvLoggerLogs
 
 # dot file
 .eunit

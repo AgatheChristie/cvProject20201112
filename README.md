@@ -9,17 +9,19 @@ ErlangDemo
 
 ## 代码结构
 
-目录|说明
-:----|:------
-config|配置文件，目前只有sasl配置
-include|头文件目录
-scripts|脚本目录
-logpps|日志目录
-logs|error_logger滚动日志目录
-src|源码目录
-deps|Rebar2.X依赖目录
-var|变量目录
-
+| 目录           | 说明              |
+|:-------------|:----------------|
+| config       | 服务器配置文件         |
+| data         | 数据文件            |
+| etc          | etc文件           |
+| include      | 头文件目录           |
+| scripts      | 脚本目录            |
+| sql          | 数据目录            |
+| src          | 源码目录            |
+| var          | Mnesia目录        |
+| cvLoggerLogs | Logger日志目录      |
+| cvSaslLogs   | SASL滚动日志目录      |
+| cvSelfLogs   | 游戏运行时日志目录       |
 
 ## 编译运行
 
@@ -28,8 +30,8 @@ var|变量目录
 进入源码根目录
 
 ```
-make 
-sudo sh gamectl live # live方式启动
+make all_rebuild
+sudo sh gamectl start # start方式启动
 
 ```
 

@@ -20,7 +20,7 @@
 write_error_log(Name, LogDataList) ->
     NowDate = calendar:now_to_local_time(util_time:now()),
     {ok, CurrentDirectory} = file:get_cwd(),
-    RunLogDir = CurrentDirectory ++ "/cvSelfLog",
+    RunLogDir = CurrentDirectory ++ "/cvSelfLogs",
     case true of
         true ->
             AllTime = "all",
