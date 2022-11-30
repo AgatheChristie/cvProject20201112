@@ -20,7 +20,7 @@ ebin
 cvSelfLogs
 cvSaslLogs
 cvLoggerLogs
-var/
+var
 # dot file
 .eunit
 .erlang.cookie
