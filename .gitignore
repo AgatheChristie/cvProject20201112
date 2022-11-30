@@ -4,20 +4,26 @@
 *.plt
 *.swp
 *.swo
+
+# IDEA file
+.idea
 *.iml
+
 # dir file
-erl_crash.dump
-ebin
-log
-logpps
-doc
-logs
 _rel
 egame.d
+doc
+
+# cv self file
+*.dump
+ebin
+cvSelfLog
+cvSaslLogs
+cvLoggerLog
+
 # dot file
 .eunit
 .erlang.cookie
-.idea
 .erlang.mk
 .concrete/DEV_MODE
 

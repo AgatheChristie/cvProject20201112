@@ -98,7 +98,7 @@ add_cvshop_item(Name, Quantity, Cost) ->
     F = fun() ->
         mnesia:write(Row)
         end,
-    mnesia:transaction(F).
+    mnesia:activity(transaction,F).
 
 remove_cvshop_item(Item) ->
     Oid = {cvshop, Item},
