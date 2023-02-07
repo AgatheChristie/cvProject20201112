@@ -47,17 +47,23 @@ RUNAPP="$RUNAPP"
 
 #    -smp $SMP   是否支持对称多处理
 
-#    +e $ERL_MAX_ETS_TABLES  设置ETS最大数量 Sets the maximum number of ETS tables.
+#    -hidden    隐藏节点
+############################################################################################
+#    +e $ERL_MAX_ETS_TABLES  设置ETS最大数量   erlang:system_info(ets_count). erlang:system_info(ets_limit).
+#    Sets the maximum number of ETS tables.
 
-#    +P $ERL_PROCESSES   设置此系统同时存在的最大进程数
+#    +P $ERL_PROCESSES   设置此系统同时存在的最大进程数 erlang:system_info(process_count). erlang:system_info(process_limit).
 #    Sets the maximum number of simultaneously existing processes
 #    for this system if a Number is passed as value.
 
-#    -hidden    隐藏节点
+#    +Q ERL_MAX_PORTS   设置此系统同时打开的端口数量限制  erlang:system_info(port_count). erlang:system_info(port_limit).
+#    Sets the maximum number of simultaneously existing ports
+#    for this system if a Number is passed as value.
 
-#     +t 10485760   设置虚拟机可以处理的最大原子数
-# Sets the maximum number of atoms the virtual machine can handle.
+#    +t 10485760   设置虚拟机可以处理的最大原子数   erlang:system_info(atom_count). erlang:system_info(atom_limit).
+#    Sets the maximum number of atoms the virtual machine can handle.
 
+############################################################################################
 #  +zdbbl 8192 端口buffer大小
 #  Sets the distribution buffer busy limit (dist_buf_busy_limit) in kilobytes
 
